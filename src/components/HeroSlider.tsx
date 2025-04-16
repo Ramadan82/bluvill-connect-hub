@@ -2,9 +2,9 @@
 import React, { useEffect, useState } from 'react';
 
 const images = [
-  "public/assets/images/1.png",
-  "public/assets/images/2.png",
-  "public/assets/images/3.png",
+  "/assets/images/image1.png",
+  "/assets/images/image2.png",
+  "/assets/images/image3.png",
   "https://images.unsplash.com/photo-1431576901776-e539bd916ba2?q=80&w=1200&auto=format&fit=crop",
 ];
 
