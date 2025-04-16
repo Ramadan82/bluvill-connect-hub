@@ -21,7 +21,7 @@ const HeroSection = () => {
             </Button>
           </Link>
           <Link to="/campus-tour">
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+            <Button size="lg" variant="outline" className="bg-white text-bluvill-800 hover:bg-gray-100">
               Explore Campus
             </Button>
           </Link>
