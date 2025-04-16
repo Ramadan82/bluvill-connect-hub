@@ -1,3 +1,4 @@
+
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -50,7 +51,6 @@ const stats = [
 const Index = () => {
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Hero Section */}
       <HeroSlider>
         <div className="max-w-3xl animate-fade-in">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
@@ -67,7 +67,7 @@ const Index = () => {
             </Link>
             <Link to="/campus-tour">
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-                Campus Tour
+                Explore Campus
               </Button>
             </Link>
           </div>
