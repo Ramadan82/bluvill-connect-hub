@@ -11,7 +11,7 @@ const programs = [
     description: 'Comprehensive programs in basic and clinical medical sciences',
     duration: '5-6 years',
     level: 'Undergraduate & Graduate',
-    imageUrl: 'https://images.unsplash.com/photo-1631815588090-d4bfec5b9576?q=80&w=1200&auto=format&fit=crop',
+    imageUrl: '/assets/images/medical sciences2.png',
     category: 'undergraduate'
   },
   {
@@ -47,7 +47,7 @@ const programs = [
     description: 'Advanced studies in medical sciences',
     duration: '2 years',
     level: 'Graduate',
-    imageUrl: 'https://images.unsplash.com/photo-1576671414121-aa2d60f1cc6c?q=80&w=1200&auto=format&fit=crop',
+    imageUrl: '/assets/images/medical science1.png',
     category: 'graduate'
   },
   {
