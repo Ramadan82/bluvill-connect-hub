@@ -1,9 +1,9 @@
-
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { GraduationCap, BookOpen, Users, MapPin, Award, Globe } from 'lucide-react';
 import ProgramCard from '@/components/ProgramCard';
+import HeroSlider from '@/components/HeroSlider';
 
 const featuredPrograms = [
   {
@@ -51,30 +51,28 @@ const Index = () => {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="hero-gradient text-white py-16 md:py-24">
-        <div className="container mx-auto px-4 md:px-8">
-          <div className="max-w-3xl animate-fade-in">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              Welcome to Bluvill University
-            </h1>
-            <p className="text-xl md:text-2xl mb-8">
-              Empowering Future Leaders Through Excellence in Education
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Link to="/admissions">
-                <Button size="lg" className="bg-white text-bluvill-800 hover:bg-gray-100">
-                  Apply Now
-                </Button>
-              </Link>
-              <Link to="/programs">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-                  Explore Programs
-                </Button>
-              </Link>
-            </div>
+      <HeroSlider>
+        <div className="max-w-3xl animate-fade-in">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+            Welcome to Bluvill University
+          </h1>
+          <p className="text-xl md:text-2xl mb-8">
+            Empowering Future Leaders Through Excellence in Education
+          </p>
+          <div className="flex flex-wrap gap-4">
+            <Link to="/admissions">
+              <Button size="lg" className="bg-white text-bluvill-800 hover:bg-gray-100">
+                Apply Now
+              </Button>
+            </Link>
+            <Link to="/campus-tour">
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+                Campus Tour
+              </Button>
+            </Link>
           </div>
         </div>
-      </section>
+      </HeroSlider>
 
       {/* Quick Links */}
       <section className="bg-white py-12">
@@ -202,8 +200,8 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="hero-gradient text-white py-16">
-        <div className="container mx-auto px-4 md:px-8 text-center">
+      <HeroSlider className="py-16">
+        <div className="text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             Begin Your Journey at Bluvill University
           </h2>
@@ -217,14 +215,14 @@ const Index = () => {
                 Apply Now
               </Button>
             </Link>
-            <Link to="/campus-life">
+            <Link to="/campus-tour">
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
                 Campus Tour
               </Button>
             </Link>
           </div>
         </div>
-      </section>
+      </HeroSlider>
     </div>
   );
 };
