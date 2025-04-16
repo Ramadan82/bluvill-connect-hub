@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Menu, X, ChevronDown } from 'lucide-react';
+import bulogo from "../../public/assets/images/bulogo.png"
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,10 +24,10 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 rounded-full bg-bluvill-700 flex items-center justify-center">
-              <span className="text-white font-bold text-lg">BU</span>
+            <div className="w-10 h-10 flex items-center justify-center">
+              <img src={bulogo} className="h-10 w-auto object-contain"/>
             </div>
-            <span className="text-bluvill-900 font-bold text-xl hidden sm:inline-block">Bluvill University</span>
+            <span className="text-blue-800 font-bold text-xl hidden sm:inline-block">Bluvill University</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -56,15 +57,15 @@ const Navbar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
             
-            <Link to="/admissions" className="font-medium text-gray-700 hover:text-bluvill-700">
+            <Link to="/admissions" className="font-medium text-gray-700 hover:text-blue-700">
               Admissions
             </Link>
             
-            <Link to="/campus-life" className="font-medium text-gray-700 hover:text-bluvill-700">
+            <Link to="/campus-life" className="font-medium text-gray-700 hover:text-blue-700">
               Campus Life
             </Link>
             
-            <Link to="/about" className="font-medium text-gray-700 hover:text-bluvill-700">
+            <Link to="/about" className="font-medium text-gray-700 hover:text-blue-700">
               About Us
             </Link>
           </nav>
@@ -72,12 +73,12 @@ const Navbar = () => {
           {/* Portal Buttons */}
           <div className="hidden md:flex items-center space-x-3">
             <Link to="/student-portal">
-              <Button variant="outline" className="text-bluvill-600 border-bluvill-600 hover:bg-bluvill-50">
+              <Button variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50">
                 Student Portal
               </Button>
             </Link>
             <Link to="/staff-portal">
-              <Button className="bg-bluvill-700 hover:bg-bluvill-800 text-white">
+              <Button className="bg-blue-700 hover:bg-blue-800 text-white">
                 Staff Portal
               </Button>
             </Link>
@@ -97,38 +98,38 @@ const Navbar = () => {
         {isOpen && (
           <div className="md:hidden py-4 mt-2 border-t">
             <nav className="flex flex-col space-y-4">
-              <p className="font-semibold text-bluvill-800 px-2">Programs</p>
+              <p className="font-semibold text-blue-800 px-2">Programs</p>
               <Link 
                 to="/programs/medical-sciences" 
-                className="px-2 py-1 text-gray-700 hover:text-bluvill-700"
+                className="px-2 py-1 text-gray-700 hover:text-blue-700"
                 onClick={toggleMenu}
               >
                 — Medical Sciences
               </Link>
               <Link 
                 to="/programs/law" 
-                className="px-2 py-1 text-gray-700 hover:text-bluvill-700"
+                className="px-2 py-1 text-gray-700 hover:text-blue-700"
                 onClick={toggleMenu}
               >
                 — Law
               </Link>
               <Link 
                 to="/programs/information-technology" 
-                className="px-2 py-1 text-gray-700 hover:text-bluvill-700"
+                className="px-2 py-1 text-gray-700 hover:text-blue-700"
                 onClick={toggleMenu}
               >
                 — Information Technology
               </Link>
               <Link 
                 to="/programs/management" 
-                className="px-2 py-1 text-gray-700 hover:text-bluvill-700"
+                className="px-2 py-1 text-gray-700 hover:text-blue-700"
                 onClick={toggleMenu}
               >
                 — Management
               </Link>
               <Link 
                 to="/programs" 
-                className="px-2 py-1 text-gray-700 hover:text-bluvill-700"
+                className="px-2 py-1 text-gray-700 hover:text-blue-700"
                 onClick={toggleMenu}
               >
                 — All Programs
@@ -136,7 +137,7 @@ const Navbar = () => {
               
               <Link 
                 to="/admissions" 
-                className="px-2 py-1 text-gray-700 hover:text-bluvill-700"
+                className="px-2 py-1 text-gray-700 hover:text-blue-700"
                 onClick={toggleMenu}
               >
                 Admissions
@@ -144,7 +145,7 @@ const Navbar = () => {
               
               <Link 
                 to="/campus-life" 
-                className="px-2 py-1 text-gray-700 hover:text-bluvill-700"
+                className="px-2 py-1 text-gray-700 hover:text-blue-700"
                 onClick={toggleMenu}
               >
                 Campus Life
@@ -152,7 +153,7 @@ const Navbar = () => {
               
               <Link 
                 to="/about" 
-                className="px-2 py-1 text-gray-700 hover:text-bluvill-700"
+                className="px-2 py-1 text-gray-700 hover:text-blue-700"
                 onClick={toggleMenu}
               >
                 About Us
@@ -160,12 +161,12 @@ const Navbar = () => {
 
               <div className="flex flex-col space-y-3 pt-2">
                 <Link to="/student-portal" onClick={toggleMenu}>
-                  <Button variant="outline" className="w-full text-bluvill-600 border-bluvill-600">
+                  <Button variant="outline" className="w-full text-blue-600 border-blue-600">
                     Student Portal
                   </Button>
                 </Link>
                 <Link to="/staff-portal" onClick={toggleMenu}>
-                  <Button className="w-full bg-bluvill-700 hover:bg-bluvill-800 text-white">
+                  <Button className="w-full bg-blue-700 hover:bg-blue-800 text-white">
                     Staff Portal
                   </Button>
                 </Link>

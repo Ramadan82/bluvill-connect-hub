@@ -35,21 +35,21 @@ const AboutSection = () => {
               leadership and professional excellence.
             </p>
             <div className="flex items-center mb-6">
-              <MapPin className="text-bluvill-600 mr-2" />
+              <MapPin className="text-blue-600 mr-2" />
               <span className="text-gray-700">Bluvill Campus, Abuja, Nigeria</span>
             </div>
             <Link to="/about">
-              <Button className="bg-bluvill-600 hover:bg-bluvill-700">Learn More About Us</Button>
+              <Button className="bg-blue-600 hover:bg-blue-700">Learn More About Us</Button>
             </Link>
           </div>
           <div className="grid grid-cols-2 gap-4">
             {stats.map((stat, index) => (
               <Card key={index} className="text-center card-hover">
                 <CardHeader className="pb-2">
-                  <div className="mx-auto text-bluvill-600">{stat.icon}</div>
+                  <div className="mx-auto text-blue-600">{stat.icon}</div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-3xl font-bold text-bluvill-800">{stat.value}</p>
+                  <p className="text-3xl font-bold text-blue-800">{stat.value}</p>
                   <p className="text-gray-600">{stat.label}</p>
                 </CardContent>
               </Card>

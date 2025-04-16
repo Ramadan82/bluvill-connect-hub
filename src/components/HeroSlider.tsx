@@ -2,9 +2,9 @@
 import React, { useEffect, useState } from 'react';
 
 const images = [
-  "https://images.unsplash.com/photo-1487958449943-2429e8be8625?q=80&w=1200&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1518005020951-eccb494ad742?q=80&w=1200&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1496307653780-42ee777d4833?q=80&w=1200&auto=format&fit=crop",
+  "public/assets/images/1.png",
+  "public/assets/images/2.png",
+  "public/assets/images/3.png",
   "https://images.unsplash.com/photo-1431576901776-e539bd916ba2?q=80&w=1200&auto=format&fit=crop",
 ];
 
@@ -33,7 +33,7 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ children, className = "" }) => 
             index === currentImageIndex ? 'opacity-100' : 'opacity-0'
           }`}
           style={{
-            backgroundImage: `linear-gradient(rgba(0, 70, 0, 0.75), rgba(0, 100, 0, 0.85)), url(${src})`,
+            backgroundImage: `linear-gradient(rgba(0, 40, 100, 0.75), rgba(0, 60, 130, 0.85)), url(${src})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             zIndex: -1

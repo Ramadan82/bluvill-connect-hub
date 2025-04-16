@@ -17,12 +17,12 @@ const CTASection = () => {
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <Link to="/admissions">
-            <Button size="lg" className="bg-white text-bluvill-800 hover:bg-gray-100">
+            <Button size="lg" className="bg-white text-blue-800 hover:bg-gray-100">
               Apply Now
             </Button>
           </Link>
           <Link to="/campus-tour">
-            <Button size="lg" variant="outline" className="bg-white text-bluvill-800 hover:bg-gray-100">
+            <Button size="lg" variant="outline" className="bg-white text-blue-800 hover:bg-gray-100">
               Campus Tour
             </Button>
           </Link>

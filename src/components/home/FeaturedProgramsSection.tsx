@@ -59,7 +59,7 @@ const FeaturedProgramsSection = () => {
         
         <div className="mt-12 text-center">
           <Link to="/programs">
-            <Button size="lg" className="bg-bluvill-600 hover:bg-bluvill-700">
+            <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
               View All Programs
             </Button>
           </Link>

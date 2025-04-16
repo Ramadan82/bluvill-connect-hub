@@ -32,7 +32,7 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
         />
       </div>
       <CardHeader>
-        <CardTitle className="text-xl text-bluvill-800">{title}</CardTitle>
+        <CardTitle className="text-xl text-blue-800">{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
@@ -49,7 +49,7 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
       </CardContent>
       <CardFooter>
         <Link to={`/programs/${id}`} className="w-full">
-          <Button variant="default" className="w-full bg-bluvill-600 hover:bg-bluvill-700">
+          <Button variant="default" className="w-full bg-blue-600 hover:bg-blue-700">
             Learn More <ArrowRight size={16} className="ml-2" />
           </Button>
         </Link>

@@ -4,7 +4,7 @@ import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from 'luc
 
 const Footer = () => {
   return (
-    <footer className="bg-bluvill-950 text-white py-12">
+    <footer className="bg-blue-950 text-white py-12">
       <div className="container mx-auto px-4 md:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* About */}
@@ -65,7 +65,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-12 pt-6 border-t border-bluvill-800">
+        <div className="mt-12 pt-6 border-t border-blue-800">
           <p className="text-center text-gray-400">
             © {new Date().getFullYear()} Bluvill University. All rights reserved.
           </p>

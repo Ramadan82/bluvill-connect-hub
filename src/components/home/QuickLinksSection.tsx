@@ -12,7 +12,7 @@ const QuickLinksSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="card-hover">
             <CardHeader>
-              <CardTitle className="flex items-center text-bluvill-700">
+              <CardTitle className="flex items-center text-blue-700">
                 <GraduationCap className="mr-2" size={24} />
                 For Prospective Students
               </CardTitle>
@@ -29,7 +29,7 @@ const QuickLinksSection = () => {
           
           <Card className="card-hover">
             <CardHeader>
-              <CardTitle className="flex items-center text-bluvill-700">
+              <CardTitle className="flex items-center text-blue-700">
                 <Users className="mr-2" size={24} />
                 For Current Students
               </CardTitle>
@@ -46,7 +46,7 @@ const QuickLinksSection = () => {
           
           <Card className="card-hover">
             <CardHeader>
-              <CardTitle className="flex items-center text-bluvill-700">
+              <CardTitle className="flex items-center text-blue-700">
                 <BookOpen className="mr-2" size={24} />
                 For Faculty & Staff
               </CardTitle>
