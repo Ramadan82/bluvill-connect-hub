@@ -141,7 +141,7 @@ const ProgramDetail = () => {
         background="gradient"
       />
 
-      <div className="container mx-auto px-4 md:px-8 py-16">
+      <div className="container mx-auto px-4 md:px-8 py-16 ">
         <div className="mb-6">
           <Link to="/programs" className="inline-flex items-center text-bluvill-600 hover:text-bluvill-800">
             <ArrowLeft size={16} className="mr-2" /> Back to Programs

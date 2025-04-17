@@ -23,9 +23,9 @@ const Navbar = () => {
       <div className="container mx-auto py-4 px-4 md:px-8">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center space-x-2 rounded-full">
             <div className="w-10 h-10 flex items-center justify-center">
-              <img src={bulogo} className="h-10 w-auto object-contain"/>
+              <img src={bulogo} className="h-10 w-auto object-contain rounded-full"/>
             </div>
             <span className="text-blue-800 font-bold text-xl hidden sm:inline-block">Bluvill University</span>
           </Link>
