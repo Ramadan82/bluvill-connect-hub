@@ -8,27 +8,20 @@ const HeroSection = () => {
   return (
     <HeroSlider>
       <div className="max-w-3xl animate-fade-in">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
           Welcome to Bluvill University
         </h1>
-        <p className="text-xl md:text-2xl mb-8 text-gray-200">
+        <p className="text-xl md:text-2xl mb-8">
           Empowering Future Leaders Through Excellence in Education
         </p>
         <div className="flex flex-wrap gap-4">
           <Link to="/admissions">
-            <Button 
-              size="lg" 
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
-            >
+            <Button size="lg" className="bg-white text-blue-800 hover:bg-gray-100">
               Apply Now
             </Button>
           </Link>
           <Link to="/campus-tour">
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="border-primary text-primary hover:bg-primary/10"
-            >
+            <Button size="lg" variant="outline" className="bg-white text-blue-800 hover:bg-gray-100">
               Explore Campus
             </Button>
           </Link>
