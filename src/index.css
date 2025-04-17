@@ -1,72 +1,54 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-      --background: 217 100% 97%;
-      --foreground: 217 100% 10%;
-      --card: 217 100% 97%;
-      --card-foreground: 217 100% 10%;
-      --popover: 217 100% 97%;
-      --popover-foreground: 217 100% 10%;
-      --primary: 217 91% 60%;
-      --primary-foreground: 0 0% 98%;
-      --secondary: 217 100% 80%;
-      --secondary-foreground: 217 100% 10%;
-      --muted: 217 100% 80%;
-      --muted-foreground: 217 100% 40%;
-      --accent: 217 100% 80%;
-      --accent-foreground: 217 100% 10%;
-      --destructive: 0 84.2% 60.2%;
-      --destructive-foreground: 0 0% 98%;
-      --border: 217 100% 80%;
-      --input: 217 100% 80%;
-      --ring: 217 91% 60%;
-      --radius: 1rem;
-      --sidebar-background: 217 100% 95%;
-      --sidebar-foreground: 217 100% 20%;
-      --sidebar-primary: 217 91% 40%;
-      --sidebar-primary-foreground: 0 0% 98%;
-      --sidebar-accent: 217 100% 90%;
-      --sidebar-accent-foreground: 217 100% 10%;
-      --sidebar-border: 217 100% 85%;
-      --sidebar-ring: 217 91% 60%;
-    }
-
-    .dark {
-      --background: 217 40% 10%;
-      --foreground: 217 60% 90%;
-      --card: 217 40% 15%;
-      --card-foreground: 217 60% 90%;
-      --popover: 217 40% 15%;
-      --popover-foreground: 217 60% 90%;
-      --primary: 217 91% 70%;
-      /* lighter shade for emphasis */
-      --primary-foreground: 0 0% 100%;
-      --secondary: 217 40% 30%;
-      --secondary-foreground: 217 60% 90%;
-      --muted: 217 30% 20%;
-      --muted-foreground: 217 40% 60%;
-      --accent: 217 50% 40%;
-      --accent-foreground: 217 60% 90%;
-      --destructive: 0 84.2% 60.2%;
-      --destructive-foreground: 0 0% 100%;
-      --border: 217 30% 30%;
-      --input: 217 30% 30%;
-      --ring: 217 91% 70%;
-      --radius: 1rem;
-      --sidebar-background: 217 40% 12%;
-      --sidebar-foreground: 217 40% 80%;
-      --sidebar-primary: 217 91% 70%;
-      --sidebar-primary-foreground: 0 0% 100%;
-      --sidebar-accent: 217 40% 25%;
-      --sidebar-accent-foreground: 217 60% 90%;
-      --sidebar-border: 217 30% 20%;
-      --sidebar-ring: 217 91% 70%;
-    }
+    --background: 217 100% 10%;       /* Dark blue background */
+    --foreground: 217 100% 90%;       /* Light text for contrast */
+    --card: 217 40% 15%;              /* Darker blue for cards */
+    --card-foreground: 217 60% 90%;   /* Light text for card content */
+    --popover: 217 40% 15%;           /* Darker blue for popovers */
+    --popover-foreground: 217 60% 90%;
+    --primary: 217 91% 60%;           /* Bright blue for primary elements */
+    --primary-foreground: 0 0% 98%;   /* Almost white text on primary */
+    --secondary: 217 50% 30%;         /* Deeper blue for secondary elements */
+    --secondary-foreground: 217 60% 90%;
+    --muted: 217 30% 20%;             /* Muted dark blue */
+    --muted-foreground: 217 40% 60%;
+    --accent: 217 50% 40%;            /* Accent blue */
+    --accent-foreground: 217 60% 90%;
+    --destructive: 208 100% 50%;      /* Blue-tinted destructive color */
+    --destructive-foreground: 0 0% 98%;
+    --border: 217 30% 30%;            /* Dark blue border */
+    --input: 217 30% 30%;             /* Dark blue input */
+    --ring: 217 91% 70%;              /* Bright blue ring */
+    --radius: 0.75rem;
   }
+
+  .dark {
+    --background: 217 40% 10%;
+    --foreground: 217 60% 90%;
+    --card: 217 40% 15%;
+    --card-foreground: 217 60% 90%;
+    --popover: 217 40% 15%;
+    --popover-foreground: 217 60% 90%;
+    --primary: 217 91% 70%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 40% 30%;
+    --secondary-foreground: 217 60% 90%;
+    --muted: 217 30% 20%;
+    --muted-foreground: 217 40% 60%;
+    --accent: 217 50% 40%;
+    --accent-foreground: 217 60% 90%;
+    --destructive: 208 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 217 30% 30%;
+    --input: 217 30% 30%;
+    --ring: 217 91% 70%;
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -76,10 +58,10 @@
     @apply bg-background text-foreground;
   }
 
-    .hero-gradient {
-      background: linear-gradient(to right, #3B82F6, #2563EB);
-      /* Tailwind's blue-500 to blue-600 */
-    }
+  .hero-gradient {
+    background: linear-gradient(to right, #3B82F6, #2563EB);
+    /* Tailwind's blue-500 to blue-600 */
+  }
 
   .section-heading {
     @apply text-3xl font-bold text-blue-800 mb-6;
