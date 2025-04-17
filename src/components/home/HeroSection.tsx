@@ -11,17 +11,17 @@ const HeroSection = () => {
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white">
           Welcome to Bluvill University
         </h1>
-        <p className="text-xl md:text-2xl mb-8 text-blue-100">
+        <p className="text-xl md:text-2xl mb-8 text-blue-200">
           Empowering Future Leaders Through Excellence in Education
         </p>
         <div className="flex flex-wrap gap-4">
           <Link to="/admissions">
-            <Button size="lg" className="bg-white text-blue-800 hover:bg-blue-50">
+            <Button size="lg" className="bg-blue-600 text-white hover:bg-blue-700">
               Apply Now
             </Button>
           </Link>
           <Link to="/campus-tour">
-            <Button size="lg" variant="outline" className="bg-transparent text-white border-white hover:bg-blue-800/20">
+            <Button size="lg" variant="outline" className="bg-transparent text-white border-blue-400 hover:bg-blue-800/30">
               Explore Campus
             </Button>
           </Link>

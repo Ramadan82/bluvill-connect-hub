@@ -33,7 +33,7 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ children, className = "" }) => 
             index === currentImageIndex ? 'opacity-100' : 'opacity-0'
           }`}
           style={{
-            backgroundImage: `linear-gradient(rgba(0, 40, 100, 0.75), rgba(0, 60, 130, 0.85)), url(${src})`,
+            backgroundImage: `linear-gradient(rgba(10, 20, 50, 0.85), rgba(15, 30, 75, 0.9)), url(${src})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             zIndex: -1

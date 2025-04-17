@@ -1,49 +1,16 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-      --background: 217 100% 97%;
-      --foreground: 217 100% 10%;
-      --card: 217 100% 97%;
-      --card-foreground: 217 100% 10%;
-      --popover: 217 100% 97%;
-      --popover-foreground: 217 100% 10%;
-      --primary: 217 91% 60%;
-      --primary-foreground: 0 0% 98%;
-      --secondary: 217 100% 80%;
-      --secondary-foreground: 217 100% 10%;
-      --muted: 217 100% 80%;
-      --muted-foreground: 217 100% 40%;
-      --accent: 217 100% 80%;
-      --accent-foreground: 217 100% 10%;
-      --destructive: 0 84.2% 60.2%;
-      --destructive-foreground: 0 0% 98%;
-      --border: 217 100% 80%;
-      --input: 217 100% 80%;
-      --ring: 217 91% 60%;
-      --radius: 1rem;
-      --sidebar-background: 217 100% 95%;
-      --sidebar-foreground: 217 100% 20%;
-      --sidebar-primary: 217 91% 40%;
-      --sidebar-primary-foreground: 0 0% 98%;
-      --sidebar-accent: 217 100% 90%;
-      --sidebar-accent-foreground: 217 100% 10%;
-      --sidebar-border: 217 100% 85%;
-      --sidebar-ring: 217 91% 60%;
-    }
-
-    .dark {
       --background: 217 40% 10%;
       --foreground: 217 60% 90%;
       --card: 217 40% 15%;
       --card-foreground: 217 60% 90%;
       --popover: 217 40% 15%;
       --popover-foreground: 217 60% 90%;
-      --primary: 217 91% 70%;
-      /* lighter shade for emphasis */
+      --primary: 217 91% 60%;
       --primary-foreground: 0 0% 100%;
       --secondary: 217 40% 30%;
       --secondary-foreground: 217 60% 90%;
@@ -66,7 +33,38 @@
       --sidebar-border: 217 30% 20%;
       --sidebar-ring: 217 91% 70%;
     }
+}
+
+@layer base {
+  * {
+    @apply border-border;
   }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  .hero-gradient {
+    background: linear-gradient(to right, #1E3A8A, #1E40AF);
+    /* Tailwind's darker blue gradients */
+  }
+
+  .section-heading {
+    @apply text-3xl font-bold text-blue-300 mb-6;
+  }
+
+  .card-hover {
+    @apply transition-transform duration-300 hover:scale-105;
+  }
+
+  .program-card {
+    @apply bg-card p-6 rounded-lg shadow-md hover:shadow-blue-900/30 transition-shadow;
+  }
+  
+  .glass-card {
+    @apply backdrop-blur-sm bg-blue-900/40 border border-blue-800/50 shadow-lg;
+  }
+}
 @layer base {
   * {
     @apply border-border;
@@ -93,3 +91,56 @@
     @apply bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow;
   }
 }
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+    .hero-gradient {
+      background: linear-gradient(to right, #3B82F6, #2563EB);
+      /* Tailwind's blue-500 to blue-600 */
+    }
+
+  .section-heading {
+    @apply text-3xl font-bold text-blue-800 mb-6;
+  }
+
+  .card-hover {
+    @apply transition-transform duration-300 hover:scale-105;
+  }
+
+  .program-card {
+    @apply bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow;
+  }
+}
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+    .hero-gradient {
+      background: linear-gradient(to right, #3B82F6, #2563EB);
+      /* Tailwind's blue-500 to blue-600 */
+    }
+
+  .section-heading {
+    @apply text-3xl font-bold text-blue-800 mb-6;
+  }
+
+  .card-hover {
+    @apply transition-transform duration-300 hover:scale-105;
+  }
+
+  .program-card {
+    @apply bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow;
+  }
+}
+
