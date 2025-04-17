@@ -13,8 +13,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   background = 'light'
 }) => {
   let bgClasses = "bg-card";
-  let textColorClass = "text-blue-800";
-  let subtitleColorClass = "text-blue-600";
+  let textColorClass = "text-blue-300";
+  let subtitleColorClass = "text-blue-400";
   
   if (background === 'dark') {
     bgClasses = "bg-blue-900";
