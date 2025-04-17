@@ -19,7 +19,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className="bg-background shadow-sm sticky top-0 z-50">
+    <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="container mx-auto py-4 px-4 md:px-8">
         <div className="flex items-center justify-between">
           {/* Logo */}
@@ -27,18 +27,18 @@ const Navbar = () => {
             <div className="w-10 h-10 flex items-center justify-center">
               <img src={bulogo} className="h-10 w-auto object-contain"/>
             </div>
-            <span className="text-foreground font-bold text-xl hidden sm:inline-block">Bluvill University</span>
+            <span className="text-blue-800 font-bold text-xl hidden sm:inline-block">Bluvill University</span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="font-medium flex items-center gap-1 text-foreground">
+                <Button variant="ghost" className="font-medium flex items-center gap-1">
                   Programs <ChevronDown size={16} />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56 bg-white">
+              <DropdownMenuContent className="w-56">
                 <DropdownMenuItem asChild>
                   <Link to="/programs/medical-sciences">Medical Sciences</Link>
                 </DropdownMenuItem>
@@ -57,15 +57,15 @@ const Navbar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
             
-            <Link to="/admissions" className="font-medium text-foreground hover:text-blue-300">
+            <Link to="/admissions" className="font-medium text-gray-700 hover:text-blue-700">
               Admissions
             </Link>
             
-            <Link to="/campus-life" className="font-medium text-foreground hover:text-blue-300">
+            <Link to="/campus-life" className="font-medium text-gray-700 hover:text-blue-700">
               Campus Life
             </Link>
             
-            <Link to="/about" className="font-medium text-foreground hover:text-blue-300">
+            <Link to="/about" className="font-medium text-gray-700 hover:text-blue-700">
               About Us
             </Link>
           </nav>
@@ -86,7 +86,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button 
-            className="md:hidden text-foreground" 
+            className="md:hidden" 
             onClick={toggleMenu}
             aria-label="Toggle menu"
           >
@@ -96,40 +96,40 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="md:hidden py-4 mt-2 border-t border-blue-800">
+          <div className="md:hidden py-4 mt-2 border-t">
             <nav className="flex flex-col space-y-4">
-              <p className="font-semibold text-foreground px-2">Programs</p>
+              <p className="font-semibold text-blue-800 px-2">Programs</p>
               <Link 
                 to="/programs/medical-sciences" 
-                className="px-2 py-1 text-foreground hover:text-blue-300"
+                className="px-2 py-1 text-gray-700 hover:text-blue-700"
                 onClick={toggleMenu}
               >
                 — Medical Sciences
               </Link>
               <Link 
                 to="/programs/law" 
-                className="px-2 py-1 text-foreground hover:text-blue-300"
+                className="px-2 py-1 text-gray-700 hover:text-blue-700"
                 onClick={toggleMenu}
               >
                 — Law
               </Link>
               <Link 
                 to="/programs/information-technology" 
-                className="px-2 py-1 text-foreground hover:text-blue-300"
+                className="px-2 py-1 text-gray-700 hover:text-blue-700"
                 onClick={toggleMenu}
               >
                 — Information Technology
               </Link>
               <Link 
                 to="/programs/management" 
-                className="px-2 py-1 text-foreground hover:text-blue-300"
+                className="px-2 py-1 text-gray-700 hover:text-blue-700"
                 onClick={toggleMenu}
               >
                 — Management
               </Link>
               <Link 
                 to="/programs" 
-                className="px-2 py-1 text-foreground hover:text-blue-300"
+                className="px-2 py-1 text-gray-700 hover:text-blue-700"
                 onClick={toggleMenu}
               >
                 — All Programs
@@ -137,7 +137,7 @@ const Navbar = () => {
               
               <Link 
                 to="/admissions" 
-                className="px-2 py-1 text-foreground hover:text-blue-300"
+                className="px-2 py-1 text-gray-700 hover:text-blue-700"
                 onClick={toggleMenu}
               >
                 Admissions
@@ -145,7 +145,7 @@ const Navbar = () => {
               
               <Link 
                 to="/campus-life" 
-                className="px-2 py-1 text-foreground hover:text-blue-300"
+                className="px-2 py-1 text-gray-700 hover:text-blue-700"
                 onClick={toggleMenu}
               >
                 Campus Life
@@ -153,7 +153,7 @@ const Navbar = () => {
               
               <Link 
                 to="/about" 
-                className="px-2 py-1 text-foreground hover:text-blue-300"
+                className="px-2 py-1 text-gray-700 hover:text-blue-700"
                 onClick={toggleMenu}
               >
                 About Us
