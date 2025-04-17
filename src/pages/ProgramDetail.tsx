@@ -15,7 +15,7 @@ const programData = {
   'medical-sciences': {
     title: 'Medical Sciences',
     description: 'The Medical Sciences program at Bluvill University offers comprehensive education in both basic and clinical medical sciences, preparing students for careers in healthcare, research, and related fields.',
-    imageUrl: 'https://images.unsplash.com/photo-1631815588090-d4bfec5b9576?q=80&w=1200&auto=format&fit=crop',
+    imageUrl: '/assets/images/medical science1.png',
     duration: '5-6 years',
     level: 'Undergraduate & Graduate',
     tuition: '₦2,500,000 - ₦3,500,000 per academic year',
