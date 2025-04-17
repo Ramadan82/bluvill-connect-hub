@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,22 +7,22 @@
   :root {
     --background: 217 100% 10%;       /* Dark blue background */
     --foreground: 217 100% 90%;       /* Light text for contrast */
-    --card: 217 40% 15%;              /* Darker blue for cards */
-    --card-foreground: 217 60% 90%;   /* Light text for card content */
-    --popover: 217 40% 15%;           /* Darker blue for popovers */
-    --popover-foreground: 217 60% 90%;
+    --card: 0 0% 100%;                /* White for cards */
+    --card-foreground: 222.2 84% 4.9%; /* Dark text for card content */
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
     --primary: 217 91% 60%;           /* Bright blue for primary elements */
     --primary-foreground: 0 0% 98%;   /* Almost white text on primary */
     --secondary: 217 50% 30%;         /* Deeper blue for secondary elements */
     --secondary-foreground: 217 60% 90%;
-    --muted: 217 30% 20%;             /* Muted dark blue */
-    --muted-foreground: 217 40% 60%;
-    --accent: 217 50% 40%;            /* Accent blue */
-    --accent-foreground: 217 60% 90%;
-    --destructive: 208 100% 50%;      /* Blue-tinted destructive color */
-    --destructive-foreground: 0 0% 98%;
-    --border: 217 30% 30%;            /* Dark blue border */
-    --input: 217 30% 30%;             /* Dark blue input */
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
     --ring: 217 91% 70%;              /* Bright blue ring */
     --radius: 0.75rem;
   }
@@ -29,22 +30,22 @@
   .dark {
     --background: 217 40% 10%;
     --foreground: 217 60% 90%;
-    --card: 217 40% 15%;
-    --card-foreground: 217 60% 90%;
-    --popover: 217 40% 15%;
-    --popover-foreground: 217 60% 90%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
     --primary: 217 91% 70%;
     --primary-foreground: 0 0% 100%;
     --secondary: 217 40% 30%;
     --secondary-foreground: 217 60% 90%;
-    --muted: 217 30% 20%;
-    --muted-foreground: 217 40% 60%;
-    --accent: 217 50% 40%;
-    --accent-foreground: 217 60% 90%;
-    --destructive: 208 100% 50%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
-    --border: 217 30% 30%;
-    --input: 217 30% 30%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
     --ring: 217 91% 70%;
   }
 }
@@ -75,3 +76,4 @@
     @apply bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow;
   }
 }
+
