@@ -12,18 +12,18 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   subtitle,
   background = 'light'
 }) => {
-  let bgClasses = "bg-gray-50";
+  let bgClasses = "bg-blue-50";
   let textColorClass = "text-blue-900";
-  let subtitleColorClass = "text-gray-600";
+  let subtitleColorClass = "text-blue-600";
   
   if (background === 'dark') {
     bgClasses = "bg-blue-900";
     textColorClass = "text-white";
-    subtitleColorClass = "text-gray-300";
+    subtitleColorClass = "text-blue-100";
   } else if (background === 'gradient') {
     bgClasses = "hero-gradient";
     textColorClass = "text-white";
-    subtitleColorClass = "text-gray-100";
+    subtitleColorClass = "text-blue-100";
   }
   
   return (

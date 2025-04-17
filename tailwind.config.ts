@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -52,18 +53,18 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))'
         },
-        bluvill: {
-          50: '#f0fff4',
-          100: '#e6f4ea',
-          200: '#c7edc0',
-          300: '#a8e596',
-          400: '#89dc6c',
-          500: '#6ad642',
-          600: '#4ec224',
-          700: '#3ca70d',
-          800: '#2a8700',
-          900: '#1e6700',
-          950: '#124300'
+        blue: {
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          200: '#bae6fd',
+          300: '#7dd3fc',
+          400: '#38bdf8',
+          500: '#0ea5e9',
+          600: '#0284c7',
+          700: '#0369a1',
+          800: '#075985',
+          900: '#0c4a6e',
+          950: '#082f49'
         },
       },
       borderRadius: {
