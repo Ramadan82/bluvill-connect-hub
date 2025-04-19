@@ -27,7 +27,7 @@ const Navbar = () => {
             <div className="w-10 h-10 flex items-center justify-center">
               <img src={bulogo} className="h-10 w-auto object-contain rounded-full"/>
             </div>
-            <span className="text-white font-bold text-xl hidden sm:inline-block">Bluvill University</span>
+            <span className="text-blue-400 font-bold text-xl hidden sm:inline-block">Bluvill University</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -61,11 +61,11 @@ const Navbar = () => {
               Admissions
             </Link>
             
-            <Link to="/campus-life" className="font-medium text-white hover:text-blue-700">
+            <Link to="/campus-life" className="font-medium text-white hover:text-blue-400">
               Campus Life
             </Link>
             
-            <Link to="/about" className="font-medium text-white hover:text-blue-700">
+            <Link to="/about" className="font-medium text-white hover:text-blue-400">
               About Us
             </Link>
           </nav>

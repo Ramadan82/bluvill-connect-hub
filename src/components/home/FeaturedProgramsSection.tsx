@@ -44,8 +44,8 @@ const FeaturedProgramsSection = () => {
     <section className="py-16 bg-blue-950">
       <div className="container mx-auto px-4 md:px-8">
         <div className="text-center mb-12">
-          <h2 className="section-heading">Our Featured Programs</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <h2 className="section-heading text-blue-400">Our Featured Programs</h2>
+          <p className="text-gray-200 max-w-2xl mx-auto">
             Discover our diverse range of undergraduate and graduate programs designed 
             to prepare you for success in your chosen field.
           </p>
