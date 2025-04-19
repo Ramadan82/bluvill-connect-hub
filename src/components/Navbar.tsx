@@ -86,7 +86,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button 
-            className="md:hidden bg-white" 
+            className="md:hidden text-white" 
             onClick={toggleMenu}
             aria-label="Toggle menu"
           >
@@ -98,7 +98,7 @@ const Navbar = () => {
         {isOpen && (
           <div className="md:hidden py-4 mt-2 border-t">
             <nav className="flex flex-col space-y-4">
-              <p className="font-semibold text-white px-2">Programs</p>
+              <p className="font-semibold text-blue-500 px-2">Programs</p>
               <Link 
                 to="/programs/medical-sciences" 
                 className="px-2 py-1 text-white hover:text-blue-700"
