@@ -34,7 +34,7 @@ const Navbar = () => {
           <nav className="hidden md:flex items-center space-x-6">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="font-medium flex items-center gap-1">
+                <Button variant="ghost" className="font-medium flex items-center gap-1 text-white">
                   Programs <ChevronDown size={16} />
                 </Button>
               </DropdownMenuTrigger>
