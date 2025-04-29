@@ -65,6 +65,13 @@ const config: Config = {
           900: "#0c4a6e",
           950: "#082f49",
         },
+      green: {
+          100: '#dcfce7',
+          600: '#16a34a',
+        },
+         bluvill: {
+          600: '#2563eb', 
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -103,6 +110,7 @@ const config: Config = {
     },
   },
   plugins: [animate],
+  
 };
 
 export default config;

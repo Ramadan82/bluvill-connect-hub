@@ -9,7 +9,6 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Menu, X, ChevronDown } from 'lucide-react';
-import bulogo from "../../public/assets/images/bulogo.png"
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +24,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 rounded-full">
             <div className="w-10 h-10 flex items-center justify-center">
-              <img src={bulogo} className="h-10 w-auto object-contain rounded-full"/>
+              <img src="/assets/images/bulogo.png" className="h-10 w-auto object-contain rounded-full"/>
             </div>
             <span className="text-blue-400 font-bold text-xl hidden sm:inline-block">Bluvill University</span>
           </Link>
