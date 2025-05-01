@@ -110,8 +110,8 @@ const Admissions = () => {
                       Applications for the upcoming academic year are now open.
                     </p>
                     <div className="flex justify-center">
-                      <Button size="lg" className="bg-blue-700 hover:bg-blue-800">
-                        <Link to="/signup" className="text-bluvill-600 hover:underline">
+                      <Button size="lg" className="bg-blue-700 hover:bg-blue-800 text-white hover:text-white">
+                        <Link to="/signup">
                         Apply for Undergraduate Programs
                         </Link>
                       </Button>
@@ -133,8 +133,8 @@ const Admissions = () => {
                       Applications for the upcoming academic year are now open.
                     </p>
                     <div className="flex justify-center">
-                      <Button size="lg" className="bg-blue-700 hover:bg-blue-800 text-white">
-                        <Link to="/signup" className="text-bluvill-600 hover:underline">
+                      <Button size="lg" className="bg-blue-700 hover:bg-blue-800 text-white hover:text-white">
+                        <Link to="/signup">
                         Apply for Graduate Programs
                         </Link>
                       </Button>
@@ -176,7 +176,9 @@ const Admissions = () => {
             <Link to="/programs">
               <Button variant="outline" className="mr-4">View Programs</Button>
             </Link>
+            <Link to="/signup">
             <Button className="bg-blue-700 hover:bg-blue-800">Begin Application</Button>
+            </Link>
           </div>
         </div>
       </section>

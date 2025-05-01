@@ -1,36 +1,25 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import PageHeader from '@/components/PageHeader';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { supabase } from '@/lib/supabase';
 import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { toast } from "@/components/ui/use-toast";
 
 const formSchema = z.object({
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  password: z.string().min(1, {
-    message: "Password is required.",
-  }),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(1, "Password is required")
 });
 
-const Login = () => {
+export default function Login() {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState("");
-
-  const form = useForm<z.infer<typeof formSchema>>({
+  
+  const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
@@ -38,110 +27,106 @@ const Login = () => {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async ({ email, password }) => {
     setIsSubmitting(true);
-    setError("");
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) throw error;
+
+      // Successful login
+      toast({
+        title: "Login successful",
+        description: "Redirecting to application...",
+      });
+      navigate('/apply');
+
+    } catch (error) {
+      let message = "Login failed. Please try again.";
       
-      // In a real app, you would call your authentication service here
-      // const response = await authService.login(values);
-      
-      // Redirect to application page after successful login
-      navigate('/applicantDashboard');
-    } catch (err) {
-      setError("Invalid email or password. Please try again.");
-      console.error(err);
+      if (error.message.includes("Invalid login credentials")) {
+        message = "Invalid email or password";
+      } else if (error.message.includes("Email not confirmed")) {
+        message = "Please verify your email first";
+      }
+
+      toast({
+        title: "Error",
+        description: message,
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div>
-      <PageHeader
-        title="Welcome Back"
-        subtitle="Log in to continue your application"
-        background="gradient"
-      />
-      <section className="py-16">
-        <div className="container mx-auto px-4 md:px-8">
-          <div className="max-w-md mx-auto">
-            <Card>
-              <CardHeader className="text-center">
-                <CardTitle>Log In</CardTitle>
-                <CardDescription>
-                  Access your account to manage your application
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {error && (
-                  <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-                    {error}
-                  </div>
-                )}
-                <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email Address</FormLabel>
-                          <FormControl>
-                            <Input type="email" placeholder="Enter your email" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Password</FormLabel>
-                          <FormControl>
-                            <Input type="password" placeholder="Enter your password" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <div className="flex justify-end">
-                      <Link 
-                        to="/forgot-password" 
-                        className="text-sm text-bluvill-600 hover:underline"
-                      >
-                        Forgot password?
-                      </Link>
-                    </div>
-                    <Button 
-                      type="submit" 
-                      className="w-full bg-blue-700 hover:bg-blue-800"
-                      disabled={isSubmitting}
-                    >
-                    
-                      {isSubmitting ? 'Logging in...' : 'Log In'}
-                    
-                    </Button>
-                  </form>
-                </Form>
-                <div className="mt-4 text-center text-sm">
-                  Don't have an account?{' '}
-                  <Link to="/signup" className="text-bluvill-600 hover:underline">
-                    Sign up
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
+    <div className="flex items-center justify-center min-h-screen p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-center">Log In</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Email</label>
+              <Input
+                {...form.register("email")}
+                type="email"
+                disabled={isSubmitting}
+              />
+              {form.formState.errors.email && (
+                <p className="mt-1 text-sm text-red-500">
+                  {form.formState.errors.email.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Password</label>
+              <Input
+                {...form.register("password")}
+                type="password"
+                disabled={isSubmitting}
+              />
+              {form.formState.errors.password && (
+                <p className="mt-1 text-sm text-red-500">
+                  {form.formState.errors.password.message}
+                </p>
+              )}
+            </div>
+
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Logging in...
+                </>
+              ) : (
+                'Log In'
+              )}
+            </Button>
+          </form>
+
+          <div className="mt-4 text-center text-sm space-y-2">
+            <div>
+              Don't have an account?{" "}
+              <a href="/signup" className="text-primary hover:underline">
+                Sign up
+              </a>
+            </div>
+            <div>
+              <a href="/forgot-password" className="text-primary hover:underline">
+                Forgot password?
+              </a>
+            </div>
           </div>
-        </div>
-      </section>
+        </CardContent>
+      </Card>
     </div>
   );
-};
-
-export default Login;
+}

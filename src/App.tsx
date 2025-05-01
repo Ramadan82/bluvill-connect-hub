@@ -17,7 +17,8 @@ import StaffPortal from "./pages/StaffPortal";
 import Layout from "./components/Layout";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login"
-import ApplicantDashboard from "./Dashboards/ApplicantDashboard"
+import Apply from "./features/applications/Apply"
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 const queryClient = new QueryClient();
 
@@ -30,7 +31,6 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Layout><Index /></Layout>} />
           <Route path="/programs" element={<Layout><Programs /></Layout>} />
-          <Route path="/applicantDashboard" element={<Layout><ApplicantDashboard /></Layout>} />
           <Route path="/programs/:id" element={<Layout><ProgramDetail /></Layout>} />
           <Route path="/admissions" element={<Layout><Admissions /></Layout>} />
          <Route path="/signup" element={<Layout><SignUp /></Layout>} />
@@ -38,8 +38,13 @@ const App = () => (
           <Route path="/campus-life" element={<Layout><CampusLife /></Layout>} />
           <Route path="/campus-tour" element={<Layout><CampusTour /></Layout>} />
           <Route path="/about" element={<Layout><AboutUs /></Layout>} />
-          <Route path="/student-portal" element={<Layout><StudentPortal /></Layout>} />
-          <Route path="/staff-portal" element={<Layout><StaffPortal /></Layout>} />
+          
+          {/* Protected routes */}
+        <Route element={<Layout><ProtectedRoute /></Layout>}>
+          <Route path="/apply" element={<Apply />} />
+          <Route path="/student-portal" element={<StudentPortal />} />
+          <Route path="/staff-portal" element={<StaffPortal />} />
+        </Route>
           <Route path="*" element={<Layout><NotFound /></Layout>} />
         </Routes>
       </BrowserRouter>

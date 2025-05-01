@@ -533,11 +533,11 @@ const handleApplication1 = () => {
                     ) : (
                       <Form {...graduateForm}>
                         <form 
-                          onSubmit={graduateForm.handleSubmit(() => {
-                             {
-                              setStep(3);
-                            }
-                          })} 
+                          // onSubmit={graduateForm.handleSubmit(() => {
+                          //    {
+                          //     setStep(3);
+                          //   }
+                          // })} 
                           className="space-y-6"
                         >
                           <h3 className="text-lg font-semibold">Personal Information</h3>
@@ -728,7 +728,8 @@ const handleApplication1 = () => {
                               Back
                             </Button>
                             <Button 
-                              type="submit"
+                              type="button"
+                              onClick={handleContinue}
                               className="bg-blue-700 hover:bg-blue-800"
                             >
                               Continue
@@ -1032,7 +1033,8 @@ const handleApplication1 = () => {
                               Back
                             </Button>
                             <Button 
-                              type="submit"
+                              type="button"
+                              onClick={handleContinue2}
                               className="bg-blue-700 hover:bg-blue-800"
                             >
                               Continue
@@ -1265,7 +1267,8 @@ const handleApplication1 = () => {
                               Back
                             </Button>
                             <Button 
-                              type="submit"
+                              type="button"
+                              onClick={handleApplication1}
                               className="bg-blue-700 hover:bg-blue-800"
                               disabled={isSubmitting}
                             >
