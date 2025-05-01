@@ -1,5 +1,6 @@
+
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { Outlet, Navigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 
