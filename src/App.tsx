@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Programs from "./pages/Programs";
@@ -33,18 +33,22 @@ const App = () => (
           <Route path="/programs" element={<Layout><Programs /></Layout>} />
           <Route path="/programs/:id" element={<Layout><ProgramDetail /></Layout>} />
           <Route path="/admissions" element={<Layout><Admissions /></Layout>} />
-         <Route path="/signup" element={<Layout><SignUp /></Layout>} />
+          <Route path="/signup" element={<Layout><SignUp /></Layout>} />
           <Route path="/login" element={<Layout><Login /></Layout>} />
           <Route path="/campus-life" element={<Layout><CampusLife /></Layout>} />
           <Route path="/campus-tour" element={<Layout><CampusTour /></Layout>} />
           <Route path="/about" element={<Layout><AboutUs /></Layout>} />
           
           {/* Protected routes */}
-        <Route element={<Layout><ProtectedRoute /></Layout>}>
-          <Route path="/apply" element={<Apply />} />
-          <Route path="/student-portal" element={<StudentPortal />} />
-          <Route path="/staff-portal" element={<StaffPortal />} />
-        </Route>
+          <Route element={<Layout><ProtectedRoute /></Layout>}>
+            <Route path="/apply" element={<Apply />} />
+            <Route path="/student-portal" element={<StudentPortal />}>
+              <Route index element={<Navigate to="/student-portal/dashboard" replace />} />
+              <Route path="*" element={<StudentPortal />} />
+            </Route>
+            <Route path="/staff-portal" element={<StaffPortal />} />
+          </Route>
+          
           <Route path="*" element={<Layout><NotFound /></Layout>} />
         </Routes>
       </BrowserRouter>

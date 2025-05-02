@@ -1,20 +1,36 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Outlet, Navigate } from 'react-router-dom';
+import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
 
 export default function ProtectedRoute() {
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
+  const location = useLocation();
+  const { toast } = useToast();
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         setAuthenticated(!!session);
+        
+        if (!session) {
+          toast({
+            title: "Authentication Required",
+            description: "Please log in to access this page.",
+            variant: "default",
+          });
+        }
       } catch (error) {
         console.error("Auth check failed:", error);
+        toast({
+          title: "Authentication Error",
+          description: "There was a problem checking your authentication status.",
+          variant: "destructive",
+        });
       } finally {
         setLoading(false);
       }
@@ -29,15 +45,18 @@ export default function ProtectedRoute() {
     );
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [toast]);
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 animate-spin" />
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <span className="ml-2 text-lg text-blue-600">Loading...</span>
       </div>
     );
   }
 
-  return authenticated ? <Outlet /> : <Navigate to="/login" replace />;
+  return authenticated ? 
+    <Outlet /> : 
+    <Navigate to="/login" state={{ from: location.pathname }} replace />;
 }

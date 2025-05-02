@@ -67,23 +67,29 @@ const StudentDashboard = () => {
               
               if (lessonsError) throw lessonsError;
               
+              // Get module IDs for the course
+              const { data: modules } = await supabase
+                .from('course_modules')
+                .select('id')
+                .eq('course_id', course.id);
+                
+              const moduleIds = modules ? modules.map(m => m.id) : [];
+              
+              // Get lessons for these modules
+              const { data: lessons } = await supabase
+                .from('course_lessons')
+                .select('id')
+                .in('module_id', moduleIds);
+                
+              const lessonIds = lessons ? lessons.map(l => l.id) : [];
+              
               // Get completed lessons for the course
               const { count: completedLessons, error: progressError } = await supabase
                 .from('lesson_progress')
                 .select('*', { count: 'exact', head: true })
                 .eq('user_id', session.user.id)
                 .eq('completed', true)
-                .in('lesson_id', 
-                  supabase
-                    .from('course_lessons')
-                    .select('id')
-                    .in('module_id', 
-                      supabase
-                        .from('course_modules')
-                        .select('id')
-                        .eq('course_id', course.id)
-                    )
-                );
+                .in('lesson_id', lessonIds);
               
               if (progressError) throw progressError;
               
@@ -92,17 +98,7 @@ const StudentDashboard = () => {
                 .from('lesson_progress')
                 .select('last_accessed')
                 .eq('user_id', session.user.id)
-                .in('lesson_id', 
-                  supabase
-                    .from('course_lessons')
-                    .select('id')
-                    .in('module_id', 
-                      supabase
-                        .from('course_modules')
-                        .select('id')
-                        .eq('course_id', course.id)
-                    )
-                )
+                .in('lesson_id', lessonIds)
                 .order('last_accessed', { ascending: false })
                 .limit(1);
               
