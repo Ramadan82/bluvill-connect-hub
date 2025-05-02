@@ -122,11 +122,13 @@ const CourseDetails = () => {
             completedLessons = progressData?.length || 0;
             
             // Add completion status to each lesson
-            modulesWithLessons.forEach(module => {
-              module.lessons.forEach(lesson => {
-                lesson.completed = progressData?.some(p => p.lesson_id === lesson.id) || false;
+            if (progressData) {
+              modulesWithLessons.forEach(module => {
+                module.lessons.forEach(lesson => {
+                  lesson.completed = progressData.some(p => p.lesson_id === lesson.id) || false;
+                });
               });
-            });
+            }
           }
           
           progress = totalLessons > 0 

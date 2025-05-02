@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   BookOpen, Calendar, FileText, LogOut, 
   User, Settings, Home, Mail, HelpCircle,
-  Menu, X
+  Menu, X 
 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import CoursesList from '@/components/courses/CoursesList';
@@ -113,14 +113,15 @@ const StudentPortal = () => {
                 </Button>
               </div>
 
-              {/* Sidebar Navigation */}
+              {/* Sidebar Navigation - Fixed position on mobile with overlay */}
               <div className={`
-                lg:block fixed lg:sticky top-0 lg:top-24 z-30 
-                transition-transform duration-300 ease-in-out
-                ${isMobile ? (sidebarOpen ? 'translate-x-0' : 'translate-x-[-100%]') : ''}
-                lg:translate-x-0 w-64 h-[calc(100vh-6rem)]
+                fixed inset-y-0 left-0 z-30 w-64 lg:w-64 lg:static
+                transform transition-transform duration-300 ease-in-out
+                ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+                bg-white lg:bg-transparent shadow-lg lg:shadow-none
+                flex flex-col
               `}>
-                <div className="bg-white rounded-lg shadow p-4 h-full overflow-y-auto">
+                <div className="flex-1 overflow-y-auto p-4 bg-white rounded-lg lg:shadow">
                   <div className="flex flex-col space-y-1">
                     <Link to="/student-portal/dashboard" onClick={closeSidebarOnMobile}>
                       <Button 
@@ -224,11 +225,16 @@ const StudentPortal = () => {
                 </div>
               </div>
               
-              {/* Main Content Area with padding for mobile sidebar */}
-              <div className={`
-                transition-all duration-300 ease-in-out
-                ${isMobile ? 'pl-0' : 'lg:pl-72'}
-              `}>
+              {/* Overlay for mobile sidebar */}
+              {sidebarOpen && (
+                <div 
+                  className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+                  onClick={toggleSidebar}
+                />
+              )}
+              
+              {/* Main Content Area */}
+              <div className="lg:ml-72 transition-all duration-300 ease-in-out">
                 <div className={`${isCoursePage ? '' : 'bg-white rounded-lg shadow p-6'} mt-4 lg:mt-0`}>
                   <Routes>
                     <Route path="/" element={<StudentDashboard />} />

@@ -40,13 +40,10 @@ const App = () => (
           <Route path="/about" element={<Layout><AboutUs /></Layout>} />
           
           {/* Protected routes */}
-          <Route element={<Layout><ProtectedRoute /></Layout>}>
-            <Route path="/apply" element={<Apply />} />
-            <Route path="/student-portal" element={<StudentPortal />}>
-              <Route index element={<Navigate to="/student-portal/dashboard" replace />} />
-              <Route path="*" element={<StudentPortal />} />
-            </Route>
-            <Route path="/staff-portal" element={<StaffPortal />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/apply" element={<Layout><Apply /></Layout>} />
+            <Route path="/student-portal/*" element={<Layout><StudentPortal /></Layout>} />
+            <Route path="/staff-portal" element={<Layout><StaffPortal /></Layout>} />
           </Route>
           
           <Route path="*" element={<Layout><NotFound /></Layout>} />
