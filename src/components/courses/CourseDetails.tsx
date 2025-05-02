@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -125,6 +124,7 @@ const CourseDetails = () => {
             if (progressData) {
               modulesWithLessons.forEach(module => {
                 module.lessons.forEach(lesson => {
+                  // Here we're adding the completed property to the lesson object
                   lesson.completed = progressData.some(p => p.lesson_id === lesson.id) || false;
                 });
               });

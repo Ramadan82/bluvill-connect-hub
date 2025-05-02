@@ -73,34 +73,47 @@ const StudentDashboard = () => {
                 .select('id')
                 .eq('course_id', course.id);
                 
+              // Extract module IDs as an array of strings
               const moduleIds = modules ? modules.map(m => m.id) : [];
               
-              // Get lessons for these modules
-              const { data: lessons } = await supabase
-                .from('course_lessons')
-                .select('id')
-                .in('module_id', moduleIds);
+              // Get lessons for these modules only if we have module IDs
+              let lessonIds: string[] = [];
+              if (moduleIds.length > 0) {
+                const { data: lessons } = await supabase
+                  .from('course_lessons')
+                  .select('id')
+                  .in('module_id', moduleIds);
+                  
+                lessonIds = lessons ? lessons.map(l => l.id) : [];
+              }
+              
+              // Get completed lessons for the course only if we have lesson IDs
+              let completedLessons = 0;
+              let latestAccess = null;
+              
+              if (lessonIds.length > 0) {
+                // Get completed lessons count
+                const { count: completedCount, error: progressError } = await supabase
+                  .from('lesson_progress')
+                  .select('*', { count: 'exact', head: true })
+                  .eq('user_id', session.user.id)
+                  .eq('completed', true)
+                  .in('lesson_id', lessonIds);
                 
-              const lessonIds = lessons ? lessons.map(l => l.id) : [];
-              
-              // Get completed lessons for the course
-              const { count: completedLessons, error: progressError } = await supabase
-                .from('lesson_progress')
-                .select('*', { count: 'exact', head: true })
-                .eq('user_id', session.user.id)
-                .eq('completed', true)
-                .in('lesson_id', lessonIds);
-              
-              if (progressError) throw progressError;
-              
-              // Get latest accessed lesson for the course
-              const { data: latestAccess } = await supabase
-                .from('lesson_progress')
-                .select('last_accessed')
-                .eq('user_id', session.user.id)
-                .in('lesson_id', lessonIds)
-                .order('last_accessed', { ascending: false })
-                .limit(1);
+                if (progressError) throw progressError;
+                completedLessons = completedCount || 0;
+                
+                // Get latest accessed lesson
+                const { data: latestAccessData } = await supabase
+                  .from('lesson_progress')
+                  .select('last_accessed')
+                  .eq('user_id', session.user.id)
+                  .in('lesson_id', lessonIds)
+                  .order('last_accessed', { ascending: false })
+                  .limit(1);
+                
+                latestAccess = latestAccessData?.[0]?.last_accessed;
+              }
               
               const progress = totalLessons > 0 
                 ? Math.round((completedLessons / totalLessons) * 100) 
@@ -112,7 +125,7 @@ const StudentDashboard = () => {
                 description: course.description,
                 image_url: course.image_url,
                 progress,
-                last_accessed: latestAccess?.[0]?.last_accessed,
+                last_accessed: latestAccess,
                 total_lessons: totalLessons || 0,
                 completed_lessons: completedLessons || 0
               };
