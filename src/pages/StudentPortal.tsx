@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/sidebar';
 import { 
   BookOpen, Calendar, FileText, LogOut, 
-  User, Settings, Home, Mail, HelpCircle
+  User, Settings, Home, Mail, HelpCircle, Menu
 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import CoursesList from '@/components/courses/CoursesList';
@@ -103,10 +103,10 @@ const StudentPortal = () => {
       <section className={`py-4 ${isCoursePage ? 'pt-2' : ''}`}>
         <div className="container mx-auto px-4">
           {user ? (
-            <SidebarProvider>
+            <SidebarProvider defaultOpen={false}>
               <div className="flex w-full min-h-[70vh]">
                 {/* Sidebar */}
-                <Sidebar side="left" variant="sidebar" className="bg-white">
+                <Sidebar side="left" variant="floating" className="bg-white shadow-lg">
                   <SidebarHeader className="p-4 flex justify-between items-center">
                     <h3 className="font-semibold text-lg">Student Portal</h3>
                     <SidebarTrigger />
@@ -231,6 +231,18 @@ const StudentPortal = () => {
                     </Button>
                   </SidebarFooter>
                 </Sidebar>
+                
+                {/* Mobile sidebar toggle button */}
+                <div className="md:hidden fixed bottom-4 right-4 z-50">
+                  <Button 
+                    size="icon" 
+                    className="rounded-full h-12 w-12 shadow-lg bg-blue-600 hover:bg-blue-700"
+                  >
+                    <SidebarTrigger>
+                      <Menu className="h-6 w-6" />
+                    </SidebarTrigger>
+                  </Button>
+                </div>
                 
                 {/* Main Content Area */}
                 <main className={`flex-1 transition-all duration-300 ${isCoursePage ? '' : 'p-6'}`}>

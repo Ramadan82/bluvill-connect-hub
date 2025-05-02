@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -59,10 +58,13 @@ const StudentDashboard = () => {
                 .from('course_lessons')
                 .select('*', { count: 'exact', head: true })
                 .in('module_id', 
-                  supabase
-                    .from('course_modules')
-                    .select('id')
-                    .eq('course_id', course.id)
+                  // Fix: Extract the SQL query and get the data first
+                  (
+                    await supabase
+                      .from('course_modules')
+                      .select('id')
+                      .eq('course_id', course.id)
+                  ).data?.map(m => m.id) || []
                 );
               
               if (lessonsError) throw lessonsError;
