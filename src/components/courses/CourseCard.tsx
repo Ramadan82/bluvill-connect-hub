@@ -31,26 +31,34 @@ const CourseCard = ({
 
   return (
     <Card className="overflow-hidden flex flex-col h-full">
-      {imageUrl && (
+      {imageUrl ? (
         <div className="h-48 overflow-hidden">
           <img 
             src={imageUrl} 
             alt={title}
             className="w-full h-full object-cover transition-transform hover:scale-105"
+            onError={(e) => {
+              // Fallback to placeholder image if the course image fails to load
+              e.currentTarget.src = '/placeholder.svg';
+            }}
           />
+        </div>
+      ) : (
+        <div className="h-48 bg-gray-100 flex items-center justify-center">
+          <BookOpen className="h-12 w-12 text-gray-400" />
         </div>
       )}
       <CardHeader>
         <CardTitle className="text-xl">{title}</CardTitle>
         <CardDescription className="line-clamp-2">
-          {description}
+          {description || "No description available"}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-grow">
         <div className="space-y-2 text-sm text-gray-600">
           <div className="flex items-center">
             <BookOpen className="h-4 w-4 mr-2" />
-            <span>{moduleCount} modules</span>
+            <span>{moduleCount} {moduleCount === 1 ? 'module' : 'modules'}</span>
           </div>
           <div className="flex items-center">
             <Clock className="h-4 w-4 mr-2" />

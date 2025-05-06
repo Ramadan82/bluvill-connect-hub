@@ -1,9 +1,11 @@
+
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { BookOpen, Award, Clock, ChevronRight } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface EnrolledCourse {
   id: string;
@@ -53,22 +55,6 @@ const StudentDashboard = () => {
             enrollments.map(async (enrollment) => {
               const course = enrollment.courses;
               
-              // Get total lessons for the course
-              const { count: totalLessons, error: lessonsError } = await supabase
-                .from('course_lessons')
-                .select('*', { count: 'exact', head: true })
-                .in('module_id', 
-                  // Fix: Extract the SQL query and get the data first
-                  (
-                    await supabase
-                      .from('course_modules')
-                      .select('id')
-                      .eq('course_id', course.id)
-                  ).data?.map(m => m.id) || []
-                );
-              
-              if (lessonsError) throw lessonsError;
-              
               // Get module IDs for the course
               const { data: modules } = await supabase
                 .from('course_modules')
@@ -78,9 +64,21 @@ const StudentDashboard = () => {
               // Extract module IDs as an array of strings
               const moduleIds = modules ? modules.map(m => m.id) : [];
               
-              // Get lessons for these modules only if we have module IDs
+              // Get total lessons for the course
+              let totalLessons = 0;
               let lessonIds: string[] = [];
+              
               if (moduleIds.length > 0) {
+                // Get lessons count for all modules
+                const { count, error: lessonsError } = await supabase
+                  .from('course_lessons')
+                  .select('id', { count: 'exact' })
+                  .in('module_id', moduleIds);
+                  
+                if (lessonsError) throw lessonsError;
+                totalLessons = count || 0;
+                
+                // Get all lesson IDs
                 const { data: lessons } = await supabase
                   .from('course_lessons')
                   .select('id')
@@ -97,7 +95,7 @@ const StudentDashboard = () => {
                 // Get completed lessons count
                 const { count: completedCount, error: progressError } = await supabase
                   .from('lesson_progress')
-                  .select('*', { count: 'exact', head: true })
+                  .select('*', { count: 'exact' })
                   .eq('user_id', session.user.id)
                   .eq('completed', true)
                   .in('lesson_id', lessonIds);
@@ -185,13 +183,21 @@ const StudentDashboard = () => {
             {enrolledCourses.map(course => (
               <Link key={course.id} to={`/student-portal/courses/${course.id}`}>
                 <Card className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer h-full">
-                  {course.image_url && (
+                  {course.image_url ? (
                     <div className="h-40 overflow-hidden">
                       <img 
                         src={course.image_url} 
                         alt={course.title}
                         className="w-full h-full object-cover"
+                        onError={(e) => {
+                          // Fallback to placeholder image if the course image fails to load
+                          e.currentTarget.src = '/placeholder.svg';
+                        }}
                       />
+                    </div>
+                  ) : (
+                    <div className="h-40 bg-gray-100 flex items-center justify-center">
+                      <BookOpen className="h-12 w-12 text-gray-400" />
                     </div>
                   )}
                   <CardHeader className="pb-2">

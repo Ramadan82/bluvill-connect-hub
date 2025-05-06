@@ -20,7 +20,7 @@ interface Lesson {
   id: string;
   title: string;
   sequence_order: number;
-  completed?: boolean;  // Added completed property
+  completed: boolean;  // Explicitly defining completed as boolean
 }
 
 interface Course {
@@ -244,6 +244,10 @@ const CourseDetails = () => {
               src={course.image_url} 
               alt={course.title} 
               className="w-full h-full object-cover"
+              onError={(e) => {
+                // Fallback to placeholder image if the course image fails to load
+                e.currentTarget.src = '/placeholder.svg';
+              }}
             />
           </div>
         )}

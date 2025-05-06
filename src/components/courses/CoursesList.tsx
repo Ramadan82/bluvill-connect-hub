@@ -10,6 +10,7 @@ interface Course {
   title: string;
   description: string | null;
   image_url: string | null;
+  module_count?: number;
 }
 
 interface Enrollment {
@@ -32,6 +33,19 @@ const CoursesList = () => {
         
         if (coursesError) throw coursesError;
         
+        // Get module count for each course
+        const coursesWithModuleCount = await Promise.all(coursesData.map(async (course) => {
+          const { count, error } = await supabase
+            .from('course_modules')
+            .select('*', { count: 'exact', head: true })
+            .eq('course_id', course.id);
+          
+          return {
+            ...course,
+            module_count: count || 0
+          };
+        }));
+        
         // Fetch user enrollments
         const { data: { session } } = await supabase.auth.getSession();
         
@@ -46,7 +60,7 @@ const CoursesList = () => {
           setEnrollments(enrollmentsData.map((e: Enrollment) => e.course_id));
         }
         
-        setCourses(coursesData || []);
+        setCourses(coursesWithModuleCount || []);
       } catch (error) {
         console.error('Error fetching data:', error);
         toast({
@@ -129,6 +143,7 @@ const CoursesList = () => {
           description={course.description}
           imageUrl={course.image_url}
           isEnrolled={enrollments.includes(course.id)}
+          moduleCount={course.module_count}
           onEnroll={handleEnroll}
         />
       ))}
