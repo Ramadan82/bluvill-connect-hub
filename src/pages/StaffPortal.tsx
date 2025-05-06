@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageHeader from '@/components/PageHeader';
 import { Button } from '@/components/ui/button';
-import { LogOut } from 'lucide-react';
+import { LogOut, Calendar, Book, BookOpen, Users, FileText, HelpCircle, Mail, Phone } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/use-toast';
 import StaffDashboard from '@/components/staff/StaffDashboard';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const StaffPortal = () => {
   const navigate = useNavigate();
