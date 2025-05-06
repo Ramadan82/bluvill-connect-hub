@@ -30,7 +30,7 @@ const StaffDashboard = () => {
         // Fetch staff profile data
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
-          .select('*')
+          .select('id, email, full_name, department, avatar_url')
           .eq('id', session.user.id)
           .single();
           
@@ -58,15 +58,16 @@ const StaffDashboard = () => {
         }
         
         // Get student count (users with student role)
-        const { count: students, error: studentsError } = await supabase
+        // Using the raw query approach to check the role count
+        const { data: roleData, error: studentsError } = await supabase
           .from('user_roles')
-          .select('*', { count: 'exact', head: true })
+          .select('id')
           .eq('role', 'student');
           
         if (studentsError) {
           console.error("Error fetching student count:", studentsError);
         } else {
-          setStudentCount(students || 0);
+          setStudentCount(roleData?.length || 0);
         }
         
       } catch (error) {

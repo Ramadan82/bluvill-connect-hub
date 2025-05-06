@@ -1,4 +1,3 @@
-
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
@@ -44,7 +43,7 @@ export default function Login() {
         .from('user_roles')
         .select('role')
         .eq('user_id', data.user.id)
-        .single();
+        .maybeSingle();
       
       if (userError && userError.code !== 'PGRST116') {
         // PGRST116 is "no rows returned" - this just means they don't have a specific role yet

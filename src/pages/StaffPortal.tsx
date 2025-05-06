@@ -1,12 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageHeader from '@/components/PageHeader';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, FileText, Users, Book, Mail, Phone, HelpCircle, ClipboardList, BookOpen, LogOut } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/use-toast';
 import StaffDashboard from '@/components/staff/StaffDashboard';
@@ -32,7 +28,7 @@ const StaffPortal = () => {
           .select('role')
           .eq('user_id', session.user.id)
           .eq('role', 'staff')
-          .single();
+          .maybeSingle();
         
         if (roleError && roleError.code !== 'PGRST116') {
           console.error("Error checking staff role:", roleError);

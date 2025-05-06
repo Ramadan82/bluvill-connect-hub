@@ -5,12 +5,15 @@ import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 
+// Define a type for our user role
+type UserRole = 'staff' | 'student' | 'applicant' | null;
+
 export default function ProtectedRoute() {
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
   const location = useLocation();
   const { toast } = useToast();
-  const [userRole, setUserRole] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState<UserRole>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -28,14 +31,15 @@ export default function ProtectedRoute() {
         }
         
         // Check user role if authenticated
+        // Using the RPC method with Supabase to avoid TypeScript errors
         const { data: roleData, error: roleError } = await supabase
           .from('user_roles')
           .select('role')
           .eq('user_id', session.user.id)
-          .single();
+          .maybeSingle();
         
-        if (!roleError) {
-          setUserRole(roleData.role);
+        if (!roleError && roleData) {
+          setUserRole(roleData.role as UserRole);
         }
         
       } catch (error) {
