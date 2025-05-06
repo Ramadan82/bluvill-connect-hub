@@ -1,3 +1,4 @@
+
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
@@ -5,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { toast } from "@/components/ui/use-toast";
@@ -31,19 +32,39 @@ export default function Login() {
     setIsSubmitting(true);
     
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
       });
 
       if (error) throw error;
 
-      // Successful login
+      // Check user role to determine redirect
+      const { data: userData, error: userError } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', data.user.id)
+        .single();
+      
+      if (userError && userError.code !== 'PGRST116') {
+        // PGRST116 is "no rows returned" - this just means they don't have a specific role yet
+        console.error("Error checking user role:", userError);
+      }
+
+      // Successful login - determine redirect based on role
       toast({
         title: "Login successful",
-        description: "Redirecting to application...",
+        description: "Welcome back!",
       });
-      navigate('/apply');
+
+      // Default to student portal if no specific role is found
+      if (userData?.role === 'staff') {
+        navigate('/staff-portal');
+      } else if (userData?.role === 'applicant') {
+        navigate('/apply');
+      } else {
+        navigate('/student-portal');
+      }
 
     } catch (error) {
       let message = "Login failed. Please try again.";

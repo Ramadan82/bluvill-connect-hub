@@ -10,6 +10,7 @@ export default function ProtectedRoute() {
   const [authenticated, setAuthenticated] = useState(false);
   const location = useLocation();
   const { toast } = useToast();
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -23,7 +24,20 @@ export default function ProtectedRoute() {
             description: "Please log in to access this page.",
             variant: "default",
           });
+          return;
         }
+        
+        // Check user role if authenticated
+        const { data: roleData, error: roleError } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .single();
+        
+        if (!roleError) {
+          setUserRole(roleData.role);
+        }
+        
       } catch (error) {
         console.error("Auth check failed:", error);
         toast({
@@ -41,6 +55,10 @@ export default function ProtectedRoute() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setAuthenticated(!!session);
+        
+        if (event === 'SIGNED_OUT') {
+          setUserRole(null);
+        }
       }
     );
 
@@ -56,7 +74,20 @@ export default function ProtectedRoute() {
     );
   }
 
-  return authenticated ? 
-    <Outlet /> : 
-    <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  // Handle role-specific routes
+  if (authenticated) {
+    // Staff portal access check
+    if (location.pathname.startsWith('/staff-portal') && userRole !== 'staff') {
+      toast({
+        title: "Access Denied",
+        description: "You do not have permission to access the staff portal.",
+        variant: "destructive",
+      });
+      return <Navigate to="/student-portal" state={{ from: location.pathname }} replace />;
+    }
+    
+    return <Outlet />;
+  }
+
+  return <Navigate to="/login" state={{ from: location.pathname }} replace />;
 }

@@ -1,13 +1,107 @@
-
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PageHeader from '@/components/PageHeader';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, FileText, Users, Book, Mail, Phone, HelpCircle, ClipboardList, BookOpen } from 'lucide-react';
+import { Calendar, FileText, Users, Book, Mail, Phone, HelpCircle, ClipboardList, BookOpen, LogOut } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/components/ui/use-toast';
+import StaffDashboard from '@/components/staff/StaffDashboard';
 
 const StaffPortal = () => {
+  const navigate = useNavigate();
+  const [authenticated, setAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!session) {
+          navigate('/login');
+          return;
+        }
+        
+        // Check if user has staff role
+        const { data: roleData, error: roleError } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .eq('role', 'staff')
+          .single();
+        
+        if (roleError && roleError.code !== 'PGRST116') {
+          console.error("Error checking staff role:", roleError);
+        }
+        
+        // If user doesn't have staff role, redirect to student portal
+        if (!roleData) {
+          toast({
+            title: "Access Denied",
+            description: "You do not have permission to access the staff portal.",
+            variant: "destructive",
+          });
+          navigate('/student-portal');
+          return;
+        }
+        
+        setAuthenticated(true);
+      } catch (error) {
+        console.error("Error checking authentication:", error);
+        navigate('/login');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    checkAuth();
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (event === 'SIGNED_OUT') {
+          setAuthenticated(false);
+          navigate('/login');
+        }
+      }
+    );
+    
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+  
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast({
+        title: "Logged Out",
+        description: "You have been successfully logged out.",
+      });
+      navigate('/login');
+    } catch (error) {
+      console.error("Error signing out:", error);
+      toast({
+        title: "Error",
+        description: "Failed to log out. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+  
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+  
+  if (!authenticated) {
+    return null; // Will redirect in useEffect
+  }
+
   return (
     <div>
       <PageHeader
@@ -16,216 +110,20 @@ const StaffPortal = () => {
         background="gradient"
       />
 
-      <section className="py-16">
+      <section className="py-8 md:py-16">
         <div className="container mx-auto px-4 md:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Login Form */}
-            <div className="lg:col-span-1">
-              <Card className="shadow-lg">
-                <CardHeader>
-                  <CardTitle className="text-bluvill-800">Staff Login</CardTitle>
-                  <CardDescription>
-                    Enter your credentials to access the staff portal
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <form>
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="staff-id">Staff ID</Label>
-                        <Input id="staff-id" placeholder="Enter your staff ID" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="password">Password</Label>
-                        <Input id="password" type="password" placeholder="Enter your password" />
-                      </div>
-                    </div>
-                  </form>
-                </CardContent>
-                <CardFooter>
-                  <div className="w-full space-y-4">
-                    <Button className="w-full bg-bluvill-700 hover:bg-bluvill-800">
-                      Login
-                    </Button>
-                    <div className="text-center space-y-2">
-                      <a href="#" className="text-sm text-bluvill-600 hover:underline block">
-                        Forgot password?
-                      </a>
-                      <a href="#" className="text-sm text-bluvill-600 hover:underline block">
-                        Need help?
-                      </a>
-                    </div>
-                  </div>
-                </CardFooter>
-              </Card>
-            </div>
-
-            {/* Portal Information */}
-            <div className="lg:col-span-2">
-              <Tabs defaultValue="about" className="w-full">
-                <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="about">About</TabsTrigger>
-                  <TabsTrigger value="services">Services</TabsTrigger>
-                  <TabsTrigger value="help">Help</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="about" className="mt-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>About the Staff Portal</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <p className="text-gray-700">
-                        The Bluvill University Staff Portal is a comprehensive platform designed to streamline 
-                        administrative tasks, facilitate teaching and research activities, and provide access 
-                        to important institutional resources.
-                      </p>
-                      <p className="text-gray-700">
-                        After logging in, you'll have access to your personal dashboard, where you can manage courses, 
-                        view class rosters, submit grades, access teaching resources, manage research projects, 
-                        and communicate with students and colleagues.
-                      </p>
-                      <div className="bg-bluvill-50 rounded-lg p-4 border border-bluvill-100">
-                        <h4 className="font-semibold text-bluvill-800 mb-2">Access Levels</h4>
-                        <p className="text-gray-700">
-                          The portal provides different access levels based on your role at the university. 
-                          Faculty members, administrative staff, and departmental heads will have access to 
-                          role-specific tools and resources.
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-                
-                <TabsContent value="services" className="mt-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Portal Services</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="flex items-start">
-                          <BookOpen className="h-6 w-6 text-bluvill-600 mr-3 flex-shrink-0 mt-1" />
-                          <div>
-                            <h4 className="font-semibold text-gray-800">Course Management</h4>
-                            <p className="text-gray-600 text-sm">Create and manage course content, class rosters, assignments, and grading</p>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-start">
-                          <Users className="h-6 w-6 text-bluvill-600 mr-3 flex-shrink-0 mt-1" />
-                          <div>
-                            <h4 className="font-semibold text-gray-800">Student Advising</h4>
-                            <p className="text-gray-600 text-sm">Access student records, academic progress, and advising tools</p>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-start">
-                          <Book className="h-6 w-6 text-bluvill-600 mr-3 flex-shrink-0 mt-1" />
-                          <div>
-                            <h4 className="font-semibold text-gray-800">Research Management</h4>
-                            <p className="text-gray-600 text-sm">Manage research projects, grant applications, and publications</p>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-start">
-                          <Calendar className="h-6 w-6 text-bluvill-600 mr-3 flex-shrink-0 mt-1" />
-                          <div>
-                            <h4 className="font-semibold text-gray-800">Calendar & Scheduling</h4>
-                            <p className="text-gray-600 text-sm">Manage your academic schedule, meetings, and appointments</p>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-start">
-                          <FileText className="h-6 w-6 text-bluvill-600 mr-3 flex-shrink-0 mt-1" />
-                          <div>
-                            <h4 className="font-semibold text-gray-800">Administrative Tools</h4>
-                            <p className="text-gray-600 text-sm">Access forms, policies, procedures, and administrative resources</p>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-start">
-                          <ClipboardList className="h-6 w-6 text-bluvill-600 mr-3 flex-shrink-0 mt-1" />
-                          <div>
-                            <h4 className="font-semibold text-gray-800">Professional Development</h4>
-                            <p className="text-gray-600 text-sm">Access training resources, workshops, and career development tools</p>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-                
-                <TabsContent value="help" className="mt-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Help & Support</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="space-y-4">
-                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                          <h4 className="font-semibold text-bluvill-800 mb-2">Technical Support</h4>
-                          <p className="text-gray-700 mb-2">
-                            For login issues, password resets, or technical difficulties with the portal.
-                          </p>
-                          <div className="flex items-center text-sm">
-                            <span className="font-medium mr-2">Email:</span>
-                            <a href="mailto:staffsupport@bluvilluniversity.edu.ng" className="text-bluvill-600 hover:underline">
-                              staffsupport@bluvilluniversity.edu.ng
-                            </a>
-                          </div>
-                          <div className="flex items-center text-sm">
-                            <span className="font-medium mr-2">Phone:</span>
-                            <span>+234 800 777 8888</span>
-                          </div>
-                        </div>
-                        
-                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                          <h4 className="font-semibold text-bluvill-800 mb-2">Academic Technology</h4>
-                          <p className="text-gray-700 mb-2">
-                            For assistance with teaching tools, learning management system, or instructional technology.
-                          </p>
-                          <div className="flex items-center text-sm">
-                            <span className="font-medium mr-2">Email:</span>
-                            <a href="mailto:edutech@bluvilluniversity.edu.ng" className="text-bluvill-600 hover:underline">
-                              edutech@bluvilluniversity.edu.ng
-                            </a>
-                          </div>
-                          <div className="flex items-center text-sm">
-                            <span className="font-medium mr-2">Phone:</span>
-                            <span>+234 800 999 0000</span>
-                          </div>
-                        </div>
-                        
-                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                          <h4 className="font-semibold text-bluvill-800 mb-2">Human Resources</h4>
-                          <p className="text-gray-700 mb-2">
-                            For questions about employment, benefits, payroll, or personnel matters.
-                          </p>
-                          <div className="flex items-center text-sm">
-                            <span className="font-medium mr-2">Email:</span>
-                            <a href="mailto:hr@bluvilluniversity.edu.ng" className="text-bluvill-600 hover:underline">
-                              hr@bluvilluniversity.edu.ng
-                            </a>
-                          </div>
-                          <div className="flex items-center text-sm">
-                            <span className="font-medium mr-2">Phone:</span>
-                            <span>+234 800 111 2222</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="text-center">
-                        <a href="#" className="text-bluvill-600 hover:underline">
-                          View Staff Handbook
-                        </a>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              </Tabs>
-            </div>
+          <div className="mb-6 flex justify-end">
+            <Button 
+              variant="outline" 
+              className="text-red-600 hover:bg-red-50 hover:text-red-700"
+              onClick={handleLogout}
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Log Out
+            </Button>
           </div>
+          
+          <StaffDashboard />
         </div>
       </section>
 
