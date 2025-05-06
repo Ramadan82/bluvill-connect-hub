@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -95,9 +94,15 @@ const CourseDetails = () => {
             
             if (lessonsError) throw lessonsError;
             
+            // Initialize lessons with completed property set to false
+            const initializedLessons = lessonsData ? lessonsData.map(lesson => ({
+              ...lesson,
+              completed: false
+            })) : [];
+            
             return {
               ...module,
-              lessons: lessonsData || []
+              lessons: initializedLessons
             };
           })
         );
@@ -127,7 +132,7 @@ const CourseDetails = () => {
           if (progressData) {
             modulesWithLessons.forEach(module => {
               module.lessons.forEach(lesson => {
-                // Here we're adding the completed property to the lesson object
+                // Update the completed property based on progress data
                 lesson.completed = progressData.some(p => p.lesson_id === lesson.id) || false;
               });
             });
