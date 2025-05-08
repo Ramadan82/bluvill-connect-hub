@@ -1,5 +1,6 @@
+
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import PageHeader from '@/components/PageHeader';
 import { Button } from '@/components/ui/button';
 import { LogOut, Calendar, Book, BookOpen, Users, FileText, HelpCircle, Mail, Phone } from 'lucide-react';
@@ -7,11 +8,14 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/use-toast';
 import StaffDashboard from '@/components/staff/StaffDashboard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import StaffRoutes from '@/components/staff/StaffRoutes';
+import StaffTypeSelector from '@/components/staff/StaffTypeSelector';
 
 const StaffPortal = () => {
   const navigate = useNavigate();
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [staffType, setStaffType] = useState('academic');
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -44,6 +48,17 @@ const StaffPortal = () => {
           });
           navigate('/student-portal');
           return;
+        }
+        
+        // Get staff type (academic or non-academic)
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('staff_type')
+          .eq('id', session.user.id)
+          .single();
+          
+        if (profileData?.staff_type) {
+          setStaffType(profileData.staff_type);
         }
         
         setAuthenticated(true);
@@ -109,7 +124,11 @@ const StaffPortal = () => {
 
       <section className="py-8 md:py-16">
         <div className="container mx-auto px-4 md:px-8">
-          <div className="mb-6 flex justify-end">
+          <div className="mb-6 flex justify-between items-center">
+            <StaffTypeSelector 
+              currentType={staffType}
+              onTypeChange={setStaffType}
+            />
             <Button 
               variant="outline" 
               className="text-red-600 hover:bg-red-50 hover:text-red-700"
@@ -120,122 +139,74 @@ const StaffPortal = () => {
             </Button>
           </div>
           
-          <StaffDashboard />
-        </div>
-      </section>
-
-      {/* Announcements & Resources */}
-      <section className="bg-gray-50 py-16">
-        <div className="container mx-auto px-4 md:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Announcements */}
-            <div>
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold text-bluvill-800 mb-2">
-                  Faculty Announcements
-                </h2>
-                <p className="text-gray-600">
-                  Stay updated with the latest information and deadlines
-                </p>
-              </div>
-              
-              <div className="space-y-4">
-                <Card>
-                  <CardHeader className="pb-2">
-                    <div className="flex justify-between items-start">
-                      <CardTitle className="text-lg">Academic Calendar Released</CardTitle>
-                      <span className="text-sm text-gray-500">May 15, 2025</span>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-700">
-                      The academic calendar for the 2025-2026 academic year has been released. Please review important 
-                      dates for course planning, examinations, and academic events.
-                    </p>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader className="pb-2">
-                    <div className="flex justify-between items-start">
-                      <CardTitle className="text-lg">Faculty Meeting</CardTitle>
-                      <span className="text-sm text-gray-500">May 10, 2025</span>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-700">
-                      The next faculty meeting will be held on May 25, 2025, at 2:00 PM in the Main Hall. 
-                      The agenda includes curriculum review and discussion of the upcoming accreditation visit.
-                    </p>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader className="pb-2">
-                    <div className="flex justify-between items-start">
-                      <CardTitle className="text-lg">Research Grant Opportunity</CardTitle>
-                      <span className="text-sm text-gray-500">May 5, 2025</span>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-700">
-                      Applications for internal research grants are now open. Faculty members are encouraged to 
-                      submit research proposals by June 15, 2025. Details available on the Research Office page.
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
+          {/* Main Content Area */}
+          <div className="mb-10">
+            <Routes>
+              <Route path="/" element={<StaffDashboard />} />
+              <Route path="/calendar/*" element={<StaffRoutes />} />
+              <Route path="/research/*" element={<StaffRoutes />} />
+              <Route path="/teaching/*" element={<StaffRoutes />} />
+              <Route path="/directory/*" element={<StaffRoutes />} />
+              <Route path="/forms/*" element={<StaffRoutes />} />
+              <Route path="/support/*" element={<StaffRoutes />} />
+            </Routes>
+          </div>
+          
+          {/* Quick Links */}
+          <div className="mb-12">
+            <h2 className="text-2xl font-bold text-bluvill-800 mb-6">
+              Quick Links
+            </h2>
             
-            {/* Quick Links */}
-            <div>
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold text-bluvill-800 mb-2">
-                  Faculty Resources
-                </h2>
-                <p className="text-gray-600">
-                  Useful tools and resources for teaching, research, and administration
-                </p>
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Button variant="outline" className="h-auto py-6 flex flex-col items-center justify-center gap-2 border-gray-300 hover:bg-gray-100 hover:text-bluvill-700">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+              <Link to="/staff-portal/calendar">
+                <Button variant="outline" className="h-auto py-6 flex flex-col items-center justify-center gap-2 w-full border-gray-300 hover:bg-gray-100 hover:text-bluvill-700">
                   <Calendar className="h-8 w-8" />
                   <span>Academic Calendar</span>
                 </Button>
-                
-                <Button variant="outline" className="h-auto py-6 flex flex-col items-center justify-center gap-2 border-gray-300 hover:bg-gray-100 hover:text-bluvill-700">
+              </Link>
+              
+              <Link to="/staff-portal/research">
+                <Button variant="outline" className="h-auto py-6 flex flex-col items-center justify-center gap-2 w-full border-gray-300 hover:bg-gray-100 hover:text-bluvill-700">
                   <Book className="h-8 w-8" />
                   <span>Research Portal</span>
                 </Button>
-                
-                <Button variant="outline" className="h-auto py-6 flex flex-col items-center justify-center gap-2 border-gray-300 hover:bg-gray-100 hover:text-bluvill-700">
+              </Link>
+              
+              <Link to="/staff-portal/teaching">
+                <Button variant="outline" className="h-auto py-6 flex flex-col items-center justify-center gap-2 w-full border-gray-300 hover:bg-gray-100 hover:text-bluvill-700">
                   <BookOpen className="h-8 w-8" />
                   <span>Teaching Resources</span>
                 </Button>
-                
-                <Button variant="outline" className="h-auto py-6 flex flex-col items-center justify-center gap-2 border-gray-300 hover:bg-gray-100 hover:text-bluvill-700">
+              </Link>
+              
+              <Link to="/staff-portal/directory">
+                <Button variant="outline" className="h-auto py-6 flex flex-col items-center justify-center gap-2 w-full border-gray-300 hover:bg-gray-100 hover:text-bluvill-700">
                   <Users className="h-8 w-8" />
                   <span>Faculty Directory</span>
                 </Button>
-                
-                <Button variant="outline" className="h-auto py-6 flex flex-col items-center justify-center gap-2 border-gray-300 hover:bg-gray-100 hover:text-bluvill-700">
+              </Link>
+              
+              <Link to="/staff-portal/forms">
+                <Button variant="outline" className="h-auto py-6 flex flex-col items-center justify-center gap-2 w-full border-gray-300 hover:bg-gray-100 hover:text-bluvill-700">
                   <FileText className="h-8 w-8" />
                   <span>Forms & Policies</span>
                 </Button>
-                
-                <Button variant="outline" className="h-auto py-6 flex flex-col items-center justify-center gap-2 border-gray-300 hover:bg-gray-100 hover:text-bluvill-700">
+              </Link>
+              
+              <Link to="/staff-portal/support">
+                <Button variant="outline" className="h-auto py-6 flex flex-col items-center justify-center gap-2 w-full border-gray-300 hover:bg-gray-100 hover:text-bluvill-700">
                   <HelpCircle className="h-8 w-8" />
                   <span>Support Services</span>
                 </Button>
-              </div>
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
       {/* Contact Information */}
-      <section className="py-16">
+      <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4 md:px-8">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-8">
