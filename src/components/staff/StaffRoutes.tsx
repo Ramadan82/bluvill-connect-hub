@@ -17,12 +17,12 @@ const StaffRoutes = ({ staffType }: StaffRoutesProps) => {
   return (
     <Routes>
       <Route path="/" element={staffType === 'academic' ? <AcademicStaffDashboard /> : <NonAcademicStaffDashboard />} />
-      <Route path="/calendar" element={<AcademicCalendar staffType={staffType} />} />
-      <Route path="/research" element={<ResearchPortal staffType={staffType} />} />
-      <Route path="/teaching" element={<TeachingResources staffType={staffType} />} />
-      <Route path="/directory" element={<FacultyDirectory staffType={staffType} />} />
+      <Route path="/calendar" element={<AcademicCalendar />} />
+      <Route path="/research" element={<ResearchPortal />} />
+      <Route path="/teaching" element={<TeachingResources />} />
+      <Route path="/directory" element={<FacultyDirectory />} />
       <Route path="/forms" element={<FormsPolicies staffType={staffType} />} />
-      <Route path="/support" element={<SupportServices staffType={staffType} />} />
+      <Route path="/support" element={<SupportServices />} />
     </Routes>
   );
 };

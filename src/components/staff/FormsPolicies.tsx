@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -24,7 +23,11 @@ interface Form {
   downloadUrl: string;
 }
 
-const FormsPolicies: React.FC<{ staffType: string }> = ({ staffType }) => {
+interface FormsPoliciesProps {
+  staffType: string;
+}
+
+const FormsPolicies: React.FC<FormsPoliciesProps> = ({ staffType }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('forms');
   const [filteredForms, setFilteredForms] = useState<Form[]>([]);
