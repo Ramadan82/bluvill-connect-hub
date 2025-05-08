@@ -1,284 +1,324 @@
 
-import { useState } from 'react';
-import { FileText, Download, Search, Filter, Eye, Clock, CalendarDays, Printer } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from '@/components/ui/select';
+import { FileText, Search, Download, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-const FormsPolicies = () => {
+interface Policy {
+  id: string;
+  title: string;
+  category: string;
+  lastUpdated: string;
+  department: string;
+  downloadUrl: string;
+}
+
+interface Form {
+  id: string;
+  title: string;
+  category: string;
+  lastUpdated: string;
+  downloadUrl: string;
+}
+
+const FormsPolicies: React.FC<{ staffType: string }> = ({ staffType }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [category, setCategory] = useState('all');
+  const [activeTab, setActiveTab] = useState('forms');
+  const [filteredForms, setFilteredForms] = useState<Form[]>([]);
+  const [filteredPolicies, setFilteredPolicies] = useState<Policy[]>([]);
   
-  // Mock data for forms and policies
-  const forms = [
+  const academicForms: Form[] = [
     {
-      id: 1,
-      title: "Course Registration Form",
-      category: "Academic",
-      lastUpdated: "April 15, 2025",
-      description: "Form for faculty to register new courses for the upcoming semester",
-      fileType: "PDF",
-      fileSizeKB: 245
+      id: '1',
+      title: 'Course Registration Form',
+      category: 'Academic',
+      lastUpdated: '2025-04-12',
+      downloadUrl: '#'
     },
     {
-      id: 2,
-      title: "Grade Change Request",
-      category: "Academic",
-      lastUpdated: "March 22, 2025",
-      description: "Form to request changes to previously submitted student grades",
-      fileType: "DOCX",
-      fileSizeKB: 180
+      id: '2',
+      title: 'Exam Accommodation Request',
+      category: 'Academic',
+      lastUpdated: '2025-03-22',
+      downloadUrl: '#'
     },
     {
-      id: 3,
-      title: "Travel Reimbursement Request",
-      category: "Finance",
-      lastUpdated: "May 1, 2025",
-      description: "Form for requesting reimbursement for approved travel expenses",
-      fileType: "PDF",
-      fileSizeKB: 320
+      id: '3',
+      title: 'Research Grant Application',
+      category: 'Research',
+      lastUpdated: '2025-04-05',
+      downloadUrl: '#'
     },
     {
-      id: 4,
-      title: "Equipment Purchase Request",
-      category: "Procurement",
-      lastUpdated: "April 28, 2025",
-      description: "Form for requesting new equipment purchases for departments",
-      fileType: "PDF",
-      fileSizeKB: 275
+      id: '4',
+      title: 'Curriculum Change Proposal',
+      category: 'Academic',
+      lastUpdated: '2025-02-18',
+      downloadUrl: '#'
+    },
+    {
+      id: '5',
+      title: 'Student Assessment Form',
+      category: 'Academic',
+      lastUpdated: '2025-03-30',
+      downloadUrl: '#'
     }
   ];
 
-  const policies = [
+  const nonAcademicForms: Form[] = [
     {
-      id: 1,
-      title: "Academic Integrity Policy",
-      category: "Academic",
-      lastUpdated: "January 10, 2025",
-      description: "Guidelines for maintaining academic integrity and addressing violations",
-      appliesTo: ["Academic Staff", "Students"]
+      id: '1',
+      title: 'IT Resource Request',
+      category: 'Administrative',
+      lastUpdated: '2025-04-10',
+      downloadUrl: '#'
     },
     {
-      id: 2,
-      title: "Faculty Leave Policy",
-      category: "HR",
-      lastUpdated: "February 5, 2025",
-      description: "Procedures and eligibility for faculty leave requests",
-      appliesTo: ["Academic Staff", "Administrative Staff"]
+      id: '2',
+      title: 'Office Supply Requisition',
+      category: 'Administrative',
+      lastUpdated: '2025-03-15',
+      downloadUrl: '#'
     },
     {
-      id: 3,
-      title: "Research Ethics Guidelines",
-      category: "Research",
-      lastUpdated: "March 15, 2025",
-      description: "Guidelines for ethical research practices and obtaining research approval",
-      appliesTo: ["Academic Staff", "Research Assistants"]
+      id: '3',
+      title: 'Event Space Booking',
+      category: 'Facilities',
+      lastUpdated: '2025-04-02',
+      downloadUrl: '#'
     },
     {
-      id: 4,
-      title: "IT Acceptable Use Policy",
-      category: "IT",
-      lastUpdated: "April 20, 2025",
-      description: "Guidelines for appropriate use of university computing resources",
-      appliesTo: ["All Staff", "Students"]
+      id: '4',
+      title: 'Travel Expense Claim',
+      category: 'Finance',
+      lastUpdated: '2025-03-25',
+      downloadUrl: '#'
+    },
+    {
+      id: '5',
+      title: 'Maintenance Request Form',
+      category: 'Facilities',
+      lastUpdated: '2025-04-08',
+      downloadUrl: '#'
     }
   ];
   
-  // Filter forms and policies based on search term and category
-  const filterItems = (items) => {
-    return items.filter(item => {
-      const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                           item.description.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = category === 'all' || item.category === category;
-      
-      return matchesSearch && matchesCategory;
-    });
+  const academicPolicies: Policy[] = [
+    {
+      id: '1',
+      title: 'Academic Integrity Policy',
+      category: 'Academic',
+      department: 'Office of Academic Affairs',
+      lastUpdated: '2025-01-15',
+      downloadUrl: '#'
+    },
+    {
+      id: '2',
+      title: 'Research Ethics Guidelines',
+      category: 'Research',
+      department: 'Research Office',
+      lastUpdated: '2025-02-10',
+      downloadUrl: '#'
+    },
+    {
+      id: '3',
+      title: 'Course Development Standards',
+      category: 'Academic',
+      department: 'Faculty Development Center',
+      lastUpdated: '2025-03-05',
+      downloadUrl: '#'
+    },
+    {
+      id: '4',
+      title: 'Faculty Evaluation Framework',
+      category: 'Academic',
+      department: 'Human Resources',
+      lastUpdated: '2025-02-28',
+      downloadUrl: '#'
+    },
+    {
+      id: '5',
+      title: 'Student Engagement Guidelines',
+      category: 'Academic',
+      department: 'Student Affairs',
+      lastUpdated: '2025-03-20',
+      downloadUrl: '#'
+    }
+  ];
+  
+  const nonAcademicPolicies: Policy[] = [
+    {
+      id: '1',
+      title: 'Staff Code of Conduct',
+      category: 'Administrative',
+      department: 'Human Resources',
+      lastUpdated: '2025-01-20',
+      downloadUrl: '#'
+    },
+    {
+      id: '2',
+      title: 'Workplace Health & Safety',
+      category: 'Administrative',
+      department: 'Facility Management',
+      lastUpdated: '2025-03-12',
+      downloadUrl: '#'
+    },
+    {
+      id: '3',
+      title: 'IT Usage Policy',
+      category: 'IT',
+      department: 'IT Services',
+      lastUpdated: '2025-02-25',
+      downloadUrl: '#'
+    },
+    {
+      id: '4',
+      title: 'Financial Procedures Manual',
+      category: 'Finance',
+      department: 'Finance Office',
+      lastUpdated: '2025-04-01',
+      downloadUrl: '#'
+    },
+    {
+      id: '5',
+      title: 'University Property Usage',
+      category: 'Administrative',
+      department: 'Asset Management',
+      lastUpdated: '2025-03-18',
+      downloadUrl: '#'
+    }
+  ];
+  
+  // Filter data based on staff type and search term
+  useEffect(() => {
+    const forms = staffType === 'academic' ? academicForms : nonAcademicForms;
+    const policies = staffType === 'academic' ? academicPolicies : nonAcademicPolicies;
+    
+    setFilteredForms(
+      forms.filter(form => 
+        form.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        form.category.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+    
+    setFilteredPolicies(
+      policies.filter(policy => 
+        policy.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        policy.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        policy.department.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [searchTerm, staffType]);
+  
+  // Compare dates as date objects, not strings
+  const sortByDate = (a: string, b: string) => {
+    const dateA = new Date(a);
+    const dateB = new Date(b);
+    return dateB.getTime() - dateA.getTime(); // newest first
   };
   
-  const filteredForms = filterItems(forms);
-  const filteredPolicies = filterItems(policies);
-  
-  // Categories for filter dropdown
-  const categories = [
-    { value: "all", label: "All Categories" },
-    { value: "Academic", label: "Academic" },
-    { value: "Finance", label: "Finance" },
-    { value: "HR", label: "Human Resources" },
-    { value: "Research", label: "Research" },
-    { value: "Procurement", label: "Procurement" },
-    { value: "IT", label: "Information Technology" }
-  ];
-
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Forms & Policies</h1>
-        <Button>
-          <FileText className="h-4 w-4 mr-2" />
-          Submit New Form
-        </Button>
+      <div>
+        <h1 className="text-2xl font-bold mb-2">Forms & Policies</h1>
+        <p className="text-gray-500">
+          Access and download important university forms and policy documents
+        </p>
       </div>
       
-      {/* Search and Filter Controls */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Search className="h-5 w-5" />
-            <span>Find Documents</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="md:col-span-2">
-              <Input 
-                placeholder="Search forms and policies" 
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-gray-500" />
-              <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map(cat => (
-                    <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Search and filter */}
+      <div className="relative">
+        <Search className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+        <Input
+          placeholder="Search for forms or policies..."
+          className="pl-10"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
       
-      {/* Forms and Policies Tabs */}
-      <Tabs defaultValue="forms">
-        <TabsList className="grid w-full grid-cols-2 mb-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="forms">Forms</TabsTrigger>
           <TabsTrigger value="policies">Policies</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="forms" className="space-y-4">
-          {filteredForms.length > 0 ? (
-            filteredForms.map(form => (
-              <Card key={form.id}>
-                <CardHeader className="pb-2">
-                  <div className="flex justify-between items-start">
-                    <div className="flex gap-3 items-center">
-                      <div className={`p-2 rounded-full ${
-                        form.fileType === 'PDF' ? 'bg-red-100 text-red-600' : 
-                        form.fileType === 'DOCX' ? 'bg-blue-100 text-blue-600' : 
-                        'bg-gray-100 text-gray-600'
-                      }`}>
-                        <FileText className="h-5 w-5" />
+        <TabsContent value="forms" className="pt-4">
+          <div className="grid grid-cols-1 gap-4">
+            {filteredForms.length > 0 ? (
+              filteredForms.map((form) => (
+                <Card key={form.id}>
+                  <CardContent className="p-6 flex justify-between items-center">
+                    <div className="flex items-start gap-4">
+                      <div className="bg-blue-100 p-2 rounded-lg">
+                        <FileText className="h-5 w-5 text-blue-600" />
                       </div>
                       <div>
-                        <CardTitle>{form.title}</CardTitle>
-                        <CardDescription className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          <span>Last updated: {form.lastUpdated}</span>
-                        </CardDescription>
+                        <h3 className="font-semibold mb-1">{form.title}</h3>
+                        <div className="flex items-center gap-2 text-sm">
+                          <Badge variant="outline">{form.category}</Badge>
+                          <span className="text-gray-500">Updated: {form.lastUpdated}</span>
+                        </div>
                       </div>
                     </div>
-                    <Badge variant="outline">{form.category}</Badge>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">{form.description}</p>
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm text-gray-500">
-                      {form.fileType} • {(form.fileSizeKB/1024).toFixed(2) < 1 ? 
-                        `${form.fileSizeKB} KB` : 
-                        `${(form.fileSizeKB/1024).toFixed(2)} MB`}
-                    </div>
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="outline" className="flex items-center gap-1">
-                        <Eye className="h-4 w-4" />
-                        View
-                      </Button>
-                      <Button size="sm" variant="outline" className="flex items-center gap-1">
+                    <Button variant="outline" className="flex items-center gap-2" asChild>
+                      <a href={form.downloadUrl} download>
                         <Download className="h-4 w-4" />
                         Download
-                      </Button>
-                      <Button size="sm" variant="outline" className="flex items-center gap-1">
-                        <Printer className="h-4 w-4" />
-                        Print
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          ) : (
-            <div className="text-center py-10">
-              <div className="flex flex-col items-center">
-                <FileText className="h-12 w-12 text-gray-300 mb-2" />
-                <h3 className="text-lg font-medium mb-1">No forms found</h3>
-                <p className="text-gray-500">Try adjusting your search criteria</p>
-              </div>
-            </div>
-          )}
+                      </a>
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <p className="text-center text-gray-500 py-10">No forms found matching your search criteria.</p>
+            )}
+          </div>
         </TabsContent>
         
-        <TabsContent value="policies" className="space-y-4">
-          {filteredPolicies.length > 0 ? (
-            filteredPolicies.map(policy => (
-              <Card key={policy.id}>
-                <CardHeader className="pb-2">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <CardTitle>{policy.title}</CardTitle>
-                      <CardDescription className="flex items-center gap-1">
-                        <CalendarDays className="h-3 w-3" />
-                        <span>Last updated: {policy.lastUpdated}</span>
-                      </CardDescription>
+        <TabsContent value="policies" className="pt-4">
+          <div className="grid grid-cols-1 gap-4">
+            {filteredPolicies.length > 0 ? (
+              filteredPolicies.map((policy) => (
+                <Card key={policy.id}>
+                  <CardContent className="p-6 flex justify-between items-center">
+                    <div className="flex items-start gap-4">
+                      <div className="bg-purple-100 p-2 rounded-lg">
+                        <FileText className="h-5 w-5 text-purple-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold mb-1">{policy.title}</h3>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-x-2 text-sm">
+                          <Badge variant="outline">{policy.category}</Badge>
+                          <span className="text-gray-600">{policy.department}</span>
+                          <span className="text-gray-500">Updated: {policy.lastUpdated}</span>
+                        </div>
+                      </div>
                     </div>
-                    <Badge variant="outline">{policy.category}</Badge>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-3">{policy.description}</p>
-                  <div className="mb-4">
-                    <p className="text-sm text-gray-500 mb-1">Applies to:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {policy.appliesTo.map((group, i) => (
-                        <Badge key={i} variant="secondary">{group}</Badge>
-                      ))}
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" className="flex items-center gap-2" asChild>
+                        <a href={policy.downloadUrl} target="_blank" rel="noopener noreferrer">
+                          <ExternalLink className="h-4 w-4" />
+                          View
+                        </a>
+                      </Button>
+                      <Button variant="outline" size="sm" className="flex items-center gap-2" asChild>
+                        <a href={policy.downloadUrl} download>
+                          <Download className="h-4 w-4" />
+                          Download
+                        </a>
+                      </Button>
                     </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button size="sm" className="flex items-center gap-1">
-                      <Eye className="h-4 w-4" />
-                      View Full Policy
-                    </Button>
-                    <Button size="sm" variant="outline" className="flex items-center gap-1">
-                      <Download className="h-4 w-4" />
-                      Download
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          ) : (
-            <div className="text-center py-10">
-              <div className="flex flex-col items-center">
-                <FileText className="h-12 w-12 text-gray-300 mb-2" />
-                <h3 className="text-lg font-medium mb-1">No policies found</h3>
-                <p className="text-gray-500">Try adjusting your search criteria</p>
-              </div>
-            </div>
-          )}
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <p className="text-center text-gray-500 py-10">No policies found matching your search criteria.</p>
+            )}
+          </div>
         </TabsContent>
       </Tabs>
     </div>

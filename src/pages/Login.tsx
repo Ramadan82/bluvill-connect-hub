@@ -1,3 +1,4 @@
+
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
@@ -56,8 +57,32 @@ export default function Login() {
         description: "Welcome back!",
       });
 
-      // Default to student portal if no specific role is found
+      // If staff, check staff type for appropriate redirection
       if (userData?.role === 'staff') {
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('staff_type')
+          .eq('id', data.user.id)
+          .single();
+          
+        if (profileError) {
+          console.error("Error fetching staff type:", profileError);
+          navigate('/staff-portal');
+          return;
+        }
+        
+        // Set staff type in profiles if it doesn't exist
+        if (!profileData?.staff_type) {
+          const { error: updateError } = await supabase
+            .from('profiles')
+            .update({ staff_type: 'academic' })
+            .eq('id', data.user.id);
+            
+          if (updateError) {
+            console.error("Error setting default staff type:", updateError);
+          }
+        }
+        
         navigate('/staff-portal');
       } else if (userData?.role === 'applicant') {
         navigate('/apply');

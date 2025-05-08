@@ -20,13 +20,6 @@ import Login from "./pages/Login"
 import Apply from "./features/applications/Apply"
 import ProtectedRoute from '@/components/ProtectedRoute';
 
-import AcademicCalendar from "@/components/staff/AcademicCalendar";
-import ResearchPortal from "@/components/staff/ResearchPortal";
-import TeachingResources from "@/components/staff/TeachingResources";
-import FacultyDirectory from "@/components/staff/FacultyDirectory";
-import FormsPolicies from "@/components/staff/FormsPolicies";
-import SupportServices from "@/components/staff/SupportServices";
-
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -52,25 +45,7 @@ const App = () => (
             <Route path="/student-portal/*" element={<Layout><StudentPortal /></Layout>} />
             
             {/* Staff Portal Routes */}
-            <Route path="/staff-portal" element={<Layout><StaffPortal /></Layout>} />
-            <Route path="/staff-portal/calendar" element={<Layout><StaffPortal /></Layout>}>
-              <Route index element={<AcademicCalendar />} />
-            </Route>
-            <Route path="/staff-portal/research" element={<Layout><StaffPortal /></Layout>}>
-              <Route index element={<ResearchPortal />} />
-            </Route>
-            <Route path="/staff-portal/teaching" element={<Layout><StaffPortal /></Layout>}>
-              <Route index element={<TeachingResources />} />
-            </Route>
-            <Route path="/staff-portal/directory" element={<Layout><StaffPortal /></Layout>}>
-              <Route index element={<FacultyDirectory />} />
-            </Route>
-            <Route path="/staff-portal/forms" element={<Layout><StaffPortal /></Layout>}>
-              <Route index element={<FormsPolicies />} />
-            </Route>
-            <Route path="/staff-portal/support" element={<Layout><StaffPortal /></Layout>}>
-              <Route index element={<SupportServices />} />
-            </Route>
+            <Route path="/staff-portal/*" element={<Layout><StaffPortal /></Layout>} />
           </Route>
           
           <Route path="*" element={<Layout><NotFound /></Layout>} />
