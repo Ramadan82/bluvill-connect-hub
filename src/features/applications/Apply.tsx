@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider } from "react-hook-form";
@@ -46,56 +46,98 @@ const Apply = () => {
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const navigate = useNavigate();
 
+  // Form setup
   const undergraduateForm = useForm<UndergraduateFormValues>({
-  resolver: zodResolver(undergraduateFormSchema),
-  defaultValues: {
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    dob: undefined,
-    gender: undefined, // Changed from "" to undefined
-    address: "",
-    stateOfOrigin: "",
-    lga: "",
-    program: "",
-    jambRegNo: "",
-    jambScore: "",
-    secondarySchool: "",
-    graduationYear: "",
-    oLevelResults: "",
-    sponsorName: "",
-    sponsorPhone: "",
-    documents: []
-  },
-});
+    resolver: zodResolver(undergraduateFormSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      dob: undefined,
+      gender: undefined,
+      address: "",
+      stateOfOrigin: "",
+      lga: "",
+      program: "",
+      jambRegNo: "",
+      jambScore: "",
+      secondarySchool: "",
+      graduationYear: "",
+      oLevelResults: "",
+      sponsorName: "",
+      sponsorPhone: "",
+      documents: []
+    },
+  });
 
-const graduateForm = useForm<GraduateFormValues>({
-  resolver: zodResolver(graduateFormSchema),
-  defaultValues: {
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    dob: undefined,
-    gender: undefined, // Changed from "" to undefined
-    address: "",
-    stateOfOrigin: "",
-    lga: "",
-    degreeType: "master",
-    program: "",
-    universityAttended: "",
-    graduationYear: "",
-    degreeClass: "",
-    researchInterest: "",
-    workExperience: "",
-    documents: [],
-    references: [
-      { name: "", email: "", relationship: "" },
-      { name: "", email: "", relationship: "" }
-    ]
-  },
-});
+  const graduateForm = useForm<GraduateFormValues>({
+    resolver: zodResolver(graduateFormSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      dob: undefined,
+      gender: undefined,
+      address: "",
+      stateOfOrigin: "",
+      lga: "",
+      degreeType: "master",
+      program: "",
+      universityAttended: "",
+      graduationYear: "",
+      degreeClass: "",
+      researchInterest: "",
+      workExperience: "",
+      documents: [],
+      references: [
+        { name: "", email: "", relationship: "" },
+        { name: "", email: "", relationship: "" }
+      ]
+    },
+  });
+
+  // Check for saved application and load it on component mount
+  useEffect(() => {
+    const loadSavedApplication = async () => {
+      try {
+        // Get the current user
+        const { data: { session } } = await supabase.auth.getSession();
+        const userId = session?.user?.id;
+        
+        if (!userId) {
+          // Not logged in, can't load saved application
+          return;
+        }
+        
+        // Try to get saved application from localStorage
+        const savedApplicationKey = `application_${userId}_${applicationType}`;
+        const savedApplication = localStorage.getItem(savedApplicationKey);
+        
+        if (savedApplication) {
+          const parsedApplication = JSON.parse(savedApplication);
+          
+          if (parsedApplication.type === 'undergraduate') {
+            undergraduateForm.reset(parsedApplication.data);
+            setStep(parsedApplication.step || 1);
+          } else if (parsedApplication.type === 'graduate') {
+            graduateForm.reset(parsedApplication.data);
+            setStep(parsedApplication.step || 1);
+          }
+          
+          toast({
+            title: "Application Loaded",
+            description: "Your previously saved application has been loaded.",
+          });
+        }
+      } catch (error) {
+        console.error("Error loading saved application:", error);
+      }
+    };
+    
+    loadSavedApplication();
+  }, [applicationType]);
 
   // Function to save application progress
   const handleSaveProgress = async () => {
@@ -120,8 +162,7 @@ const graduateForm = useForm<GraduateFormValues>({
         ? undergraduateForm.getValues()
         : graduateForm.getValues();
       
-      // Save to the database (in a real app, you would have an applications table)
-      // Since we don't have a real DB table, we'll simulate saving to localStorage
+      // Save to localStorage
       localStorage.setItem(`application_${userId}_${applicationType}`, JSON.stringify({
         type: applicationType,
         step: step,
@@ -277,140 +318,138 @@ const graduateForm = useForm<GraduateFormValues>({
                 </CardDescription>
               </CardHeader>
               <CardContent>
-
                 {/* Step 1 - Application Type */}
-{step === 1 && (
-  <ApplicationTypeStep 
-    applicationType={applicationType}
-    setApplicationType={setApplicationType}
-    onContinue={() => setStep(2)}
-  />
-)}
+                {step === 1 && (
+                  <ApplicationTypeStep 
+                    applicationType={applicationType}
+                    setApplicationType={setApplicationType}
+                    onContinue={() => setStep(2)}
+                  />
+                )}
 
-{/* Step 2 - Personal Info */}
-{step === 2 && (
-  <div>
-    {applicationType === 'undergraduate' ? (
-      <FormProvider {...undergraduateForm}>
-        <UndergraduatePersonalInfoForm 
-          onBack={handleBack}
-          onContinue={() => setStep(3)}
-        />
-      </FormProvider>
-    ) : (
-      <FormProvider {...graduateForm}>
-        <GraduatePersonalInfoForm 
-          onBack={handleBack}
-          onContinue={() => setStep(3)}
-        />
-      </FormProvider>
-    )}
-  </div>
-)}
+                {/* Step 2 - Personal Info */}
+                {step === 2 && (
+                  <div>
+                    {applicationType === 'undergraduate' ? (
+                      <FormProvider {...undergraduateForm}>
+                        <UndergraduatePersonalInfoForm 
+                          onBack={handleBack}
+                          onContinue={() => setStep(3)}
+                        />
+                      </FormProvider>
+                    ) : (
+                      <FormProvider {...graduateForm}>
+                        <GraduatePersonalInfoForm 
+                          onBack={handleBack}
+                          onContinue={() => setStep(3)}
+                        />
+                      </FormProvider>
+                    )}
+                  </div>
+                )}
 
-{/* Step 3 - Academic Details */}
-{step === 3 && (
-  <div>
-    {applicationType === 'undergraduate' ? (
-      <FormProvider {...undergraduateForm}>
-        <UndergraduateAcademicInfoForm 
-          onBack={() => setStep(2)}
-          onContinue={() => setStep(4)}
-        />
-      </FormProvider>
-    ) : (
-      <FormProvider {...graduateForm}>
-        <GraduateAcademicInfoForm 
-          onBack={() => setStep(2)}
-          onContinue={() => setStep(4)}
-        />
-      </FormProvider>
-    )}
-  </div>
-)}
+                {/* Step 3 - Academic Details */}
+                {step === 3 && (
+                  <div>
+                    {applicationType === 'undergraduate' ? (
+                      <FormProvider {...undergraduateForm}>
+                        <UndergraduateAcademicInfoForm 
+                          onBack={() => setStep(2)}
+                          onContinue={() => setStep(4)}
+                        />
+                      </FormProvider>
+                    ) : (
+                      <FormProvider {...graduateForm}>
+                        <GraduateAcademicInfoForm 
+                          onBack={() => setStep(2)}
+                          onContinue={() => setStep(4)}
+                        />
+                      </FormProvider>
+                    )}
+                  </div>
+                )}
 
-{/* Step 4 - Documents */}
-{step === 4 && (
-  <div>
-    {applicationType === 'undergraduate' ? (
-      <FormProvider {...undergraduateForm}>
-        <DocumentsUploadForm />
-      </FormProvider>
-    ) : (
-      <FormProvider {...graduateForm}>
-        <DocumentsUploadForm />
-      </FormProvider>
-    )}
-    <div className="flex justify-between pt-4">
-      <Button 
-        type="button" 
-        variant="outline" 
-        onClick={() => setStep(3)}
-      >
-        Back
-      </Button>
-      <Button 
-        type="button"
-        onClick={() => setStep(applicationType === 'graduate' ? 5 : 5)} // Both go to 5, but graduate's 5 is references
-        className="bg-blue-700 hover:bg-blue-800"
-      >
-        Continue
-      </Button>
-    </div>
-  </div>
-)}
+                {/* Step 4 - Documents */}
+                {step === 4 && (
+                  <div>
+                    {applicationType === 'undergraduate' ? (
+                      <FormProvider {...undergraduateForm}>
+                        <DocumentsUploadForm />
+                      </FormProvider>
+                    ) : (
+                      <FormProvider {...graduateForm}>
+                        <DocumentsUploadForm />
+                      </FormProvider>
+                    )}
+                    <div className="flex justify-between pt-4">
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={() => setStep(3)}
+                      >
+                        Back
+                      </Button>
+                      <Button 
+                        type="button"
+                        onClick={() => setStep(applicationType === 'graduate' ? 5 : 5)} // Both go to 5, but graduate's 5 is references
+                        className="bg-blue-700 hover:bg-blue-800"
+                      >
+                        Continue
+                      </Button>
+                    </div>
+                  </div>
+                )}
 
-{/* Step 5 - References (Graduate only) OR Review (Undergraduate) */}
-{step === 5 && (
-  <div>
-    {applicationType === 'graduate' ? (
-      <FormProvider {...graduateForm}>
-        <ReferencesForm />
-      </FormProvider>
-    ) : (
-      <FormProvider {...undergraduateForm}>
-        <UndergraduateReviewForm 
-          onBack={() => setStep(4)}
-          onSubmit={onSubmitUndergraduate}
-          isSubmitting={isSubmitting}
-        />
-      </FormProvider>
-    )}
-    <div className="flex justify-between pt-4">
-      <Button 
-        type="button" 
-        variant="outline" 
-        onClick={() => setStep(4)}
-      >
-        Back
-      </Button>
-      {applicationType === 'graduate' ? (
-        <Button 
-          type="button"
-          onClick={() => setStep(6)}
-          className="bg-blue-700 hover:bg-blue-800"
-        >
-          Continue
-        </Button>
-      ) : null}
-    </div>
-  </div>
-)}
+                {/* Step 5 - References (Graduate only) OR Review (Undergraduate) */}
+                {step === 5 && (
+                  <div>
+                    {applicationType === 'graduate' ? (
+                      <FormProvider {...graduateForm}>
+                        <ReferencesForm />
+                      </FormProvider>
+                    ) : (
+                      <FormProvider {...undergraduateForm}>
+                        <UndergraduateReviewForm 
+                          onBack={() => setStep(4)}
+                          onSubmit={onSubmitUndergraduate}
+                          isSubmitting={isSubmitting}
+                        />
+                      </FormProvider>
+                    )}
+                    <div className="flex justify-between pt-4">
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={() => setStep(4)}
+                      >
+                        Back
+                      </Button>
+                      {applicationType === 'graduate' ? (
+                        <Button 
+                          type="button"
+                          onClick={() => setStep(6)}
+                          className="bg-blue-700 hover:bg-blue-800"
+                        >
+                          Continue
+                        </Button>
+                      ) : null}
+                    </div>
+                  </div>
+                )}
 
-{/* Step 6 - Review (Graduate only) */}
-{applicationType === 'graduate' && step === 6 && (
-  <div>
-    <FormProvider {...graduateForm}>
-      <GraduateReviewForm 
-        onBack={() => setStep(5)}
-        onSubmit={onSubmitGraduate}
-        isSubmitting={isSubmitting}
-        applicationType={applicationType}
-      />
-    </FormProvider>
-  </div>
-)}
-
+                {/* Step 6 - Review (Graduate only) */}
+                {applicationType === 'graduate' && step === 6 && (
+                  <div>
+                    <FormProvider {...graduateForm}>
+                      <GraduateReviewForm 
+                        onBack={() => setStep(5)}
+                        onSubmit={onSubmitGraduate}
+                        isSubmitting={isSubmitting}
+                        applicationType={applicationType}
+                      />
+                    </FormProvider>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>

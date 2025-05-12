@@ -1,13 +1,14 @@
 
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import StaffDashboard from './StaffDashboard';
-import SupportServices from './SupportServices';
-import FormsPolicies from './FormsPolicies';
-import AcademicCalendar from './AcademicCalendar';
-import FacultyDirectory from './FacultyDirectory';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import TeachingResources from './TeachingResources';
 import ResearchPortal from './ResearchPortal';
+import AcademicCalendar from './AcademicCalendar';
+import FacultyDirectory from './FacultyDirectory';
+import FormsPolicies from './FormsPolicies';
+import SupportServices from './SupportServices';
+import AcademicStaffDashboard from './AcademicStaffDashboard';
+import NonAcademicStaffDashboard from './NonAcademicStaffDashboard';
 
 interface StaffRoutesProps {
   staffType: string;
@@ -16,14 +17,15 @@ interface StaffRoutesProps {
 const StaffRoutes: React.FC<StaffRoutesProps> = ({ staffType }) => {
   return (
     <Routes>
-      <Route path="/" element={<StaffDashboard staffType={staffType} />} />
-      <Route path="/dashboard" element={<StaffDashboard staffType={staffType} />} />
-      <Route path="/support" element={<SupportServices />} />
-      <Route path="/forms-policies" element={<FormsPolicies staffType={staffType} />} />
-      <Route path="/academic-calendar" element={<AcademicCalendar />} />
+      <Route path="/" element={staffType === 'academic' ? <AcademicStaffDashboard /> : <NonAcademicStaffDashboard />} />
+      <Route path="/dashboard" element={staffType === 'academic' ? <AcademicStaffDashboard /> : <NonAcademicStaffDashboard />} />
+      <Route path="/calendar" element={<AcademicCalendar />} />
+      <Route path="/teaching-resources" element={<TeachingResources />} />
+      <Route path="/research-portal" element={<ResearchPortal />} />
       <Route path="/faculty-directory" element={<FacultyDirectory />} />
-      <Route path="/teaching-resources" element={<TeachingResources staffType={staffType} />} />
-      <Route path="/research-portal" element={<ResearchPortal staffType={staffType} />} />
+      <Route path="/forms-policies" element={<FormsPolicies />} />
+      <Route path="/support-services" element={<SupportServices />} />
+      <Route path="*" element={<Navigate to="/staff-portal" replace />} />
     </Routes>
   );
 };
