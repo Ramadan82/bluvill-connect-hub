@@ -1,28 +1,29 @@
 
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import AcademicStaffDashboard from '@/components/staff/AcademicStaffDashboard';
-import NonAcademicStaffDashboard from '@/components/staff/NonAcademicStaffDashboard';
-import AcademicCalendar from '@/components/staff/AcademicCalendar';
-import ResearchPortal from '@/components/staff/ResearchPortal';
-import TeachingResources from '@/components/staff/TeachingResources';
-import FacultyDirectory from '@/components/staff/FacultyDirectory';
-import FormsPolicies from '@/components/staff/FormsPolicies';
-import SupportServices from '@/components/staff/SupportServices';
+import StaffDashboard from './StaffDashboard';
+import SupportServices from './SupportServices';
+import FormsPolicies from './FormsPolicies';
+import AcademicCalendar from './AcademicCalendar';
+import FacultyDirectory from './FacultyDirectory';
+import TeachingResources from './TeachingResources';
+import ResearchPortal from './ResearchPortal';
 
 interface StaffRoutesProps {
   staffType: string;
 }
 
-const StaffRoutes = ({ staffType }: StaffRoutesProps) => {
+const StaffRoutes: React.FC<StaffRoutesProps> = ({ staffType }) => {
   return (
     <Routes>
-      <Route path="/" element={staffType === 'academic' ? <AcademicStaffDashboard /> : <NonAcademicStaffDashboard />} />
-      <Route path="/calendar" element={<AcademicCalendar />} />
-      <Route path="/research" element={<ResearchPortal />} />
-      <Route path="/teaching" element={<TeachingResources />} />
-      <Route path="/directory" element={<FacultyDirectory />} />
-      <Route path="/forms" element={<FormsPolicies staffType={staffType} />} />
+      <Route path="/" element={<StaffDashboard staffType={staffType} />} />
+      <Route path="/dashboard" element={<StaffDashboard staffType={staffType} />} />
       <Route path="/support" element={<SupportServices />} />
+      <Route path="/forms-policies" element={<FormsPolicies staffType={staffType} />} />
+      <Route path="/academic-calendar" element={<AcademicCalendar />} />
+      <Route path="/faculty-directory" element={<FacultyDirectory />} />
+      <Route path="/teaching-resources" element={<TeachingResources staffType={staffType} />} />
+      <Route path="/research-portal" element={<ResearchPortal staffType={staffType} />} />
     </Routes>
   );
 };

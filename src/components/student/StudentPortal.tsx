@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -17,7 +16,7 @@ import {
 } from '@/components/ui/sidebar';
 import { 
   BookOpen, Calendar, FileText, LogOut, 
-  User, Settings, Home, Mail, HelpCircle, Menu, X
+  User, Settings, Home, Mail, HelpCircle, Menu, X, Save
 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import CoursesList from '@/components/courses/CoursesList';
@@ -40,18 +39,39 @@ interface User {
   };
 }
 
+interface UserProfile {
+  id: string;
+  full_name?: string;
+  email: string;
+}
+
 const StudentPortal = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState<User | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         setUser(session?.user ?? null);
+        
+        // Fetch user profile to get first name
+        if (session?.user) {
+          const { data: profileData, error } = await supabase
+            .from('profiles')
+            .select('id, full_name, email')
+            .eq('id', session.user.id)
+            .single();
+            
+          if (!error && profileData) {
+            setUserProfile(profileData);
+          }
+        }
       } catch (error) {
         console.error("Error checking auth status:", error);
       } finally {
@@ -62,10 +82,14 @@ const StudentPortal = () => {
     checkAuth();
     
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      (event, session) => {
         setUser(session?.user ?? null);
         if (!session?.user) {
           navigate('/login');
+          setUserProfile(null);
+        } else {
+          // Fetch profile when auth state changes
+          fetchUserProfile(session.user.id);
         }
       }
     );
@@ -73,8 +97,25 @@ const StudentPortal = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
   
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, full_name, email')
+        .eq('id', userId)
+        .single();
+        
+      if (!error && data) {
+        setUserProfile(data);
+      }
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    }
+  };
+  
   const handleLogout = async () => {
     try {
+      await saveUserProgress();
       await supabase.auth.signOut();
       toast({
         title: "Logged Out",
@@ -91,6 +132,52 @@ const StudentPortal = () => {
     }
   };
   
+  const saveUserProgress = async () => {
+    if (!user) return;
+    
+    setIsSaving(true);
+    try {
+      // Get the current timestamp
+      const timestamp = new Date().toISOString();
+      
+      // Update the last_accessed field for the user's lesson progress
+      const { error } = await supabase
+        .from('lesson_progress')
+        .update({ last_accessed: timestamp })
+        .eq('user_id', user.id)
+        .is('completed', false);
+      
+      if (error) throw error;
+      
+      toast({
+        title: "Progress Saved",
+        description: "Your progress has been saved successfully.",
+      });
+    } catch (error) {
+      console.error("Error saving progress:", error);
+      toast({
+        title: "Save Failed",
+        description: "There was an issue saving your progress.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+  
+  const handleSaveProgress = async () => {
+    await saveUserProgress();
+  };
+  
+  const getUserDisplayName = () => {
+    if (userProfile?.full_name) {
+      // Get first name from full name
+      const firstName = userProfile.full_name.split(' ')[0];
+      return firstName;
+    }
+    return user?.email?.split('@')[0] || 'Student';
+  };
+  
   const isCoursePage = location.pathname.includes('/courses/') && location.pathname.includes('/lessons/');
   const isDashboardPage = location.pathname === '/student-portal' || location.pathname === '/student-portal/dashboard';
   const isCoursesPage = location.pathname === '/student-portal/courses';
@@ -102,7 +189,7 @@ const StudentPortal = () => {
     <div className="min-h-screen bg-gray-50">
       {!isCoursePage && (
         <PageHeader
-          title="Student Portal"
+          title={`Welcome, ${getUserDisplayName()}!`}
           subtitle="Access your courses, resources, and track your academic progress"
           background="gradient"
         />
@@ -238,7 +325,16 @@ const StudentPortal = () => {
                       </SidebarMenu>
                     </SidebarContent>
                     
-                    <SidebarFooter className="border-t p-4">
+                    <SidebarFooter className="border-t p-4 space-y-2">
+                      <Button 
+                        variant="outline"
+                        onClick={handleSaveProgress}
+                        className="w-full justify-start"
+                        disabled={isSaving}
+                      >
+                        <Save className="h-5 w-5 mr-2" />
+                        {isSaving ? 'Saving...' : 'Save Progress'}
+                      </Button>
                       <Button 
                         variant="ghost"
                         onClick={handleLogout}
@@ -377,7 +473,16 @@ const StudentPortal = () => {
                       </SidebarMenu>
                     </SidebarContent>
                     
-                    <SidebarFooter className="border-t p-4">
+                    <SidebarFooter className="border-t p-4 space-y-2">
+                      <Button 
+                        variant="outline"
+                        onClick={handleSaveProgress}
+                        className="w-full justify-start"
+                        disabled={isSaving}
+                      >
+                        <Save className="h-5 w-5 mr-2" />
+                        {isSaving ? 'Saving...' : 'Save Progress'}
+                      </Button>
                       <Button 
                         variant="ghost"
                         onClick={() => {

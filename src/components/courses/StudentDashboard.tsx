@@ -21,7 +21,7 @@ interface EnrolledCourse {
 const StudentDashboard = () => {
   const [enrolledCourses, setEnrolledCourses] = useState<EnrolledCourse[]>([]);
   const [loading, setLoading] = useState(true);
-  const [username, setUsername] = useState('');
+  const [firstName, setFirstName] = useState('');
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -29,8 +29,20 @@ const StudentDashboard = () => {
         const { data: { session } } = await supabase.auth.getSession();
         
         if (session) {
-          // Get user's email to display
-          setUsername(session.user.email || 'Student');
+          // Get user's profile to display first name
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('full_name, email')
+            .eq('id', session.user.id)
+            .single();
+            
+          if (profileData?.full_name) {
+            // Extract first name from full name
+            setFirstName(profileData.full_name.split(' ')[0]);
+          } else {
+            // Fallback to email username if no full name
+            setFirstName(session.user.email?.split('@')[0] || 'Student');
+          }
           
           // Fetch user's enrolled courses
           const { data: enrollments, error: enrollmentsError } = await supabase
@@ -148,7 +160,7 @@ const StudentDashboard = () => {
     <div className="space-y-6">
       {/* Welcome section */}
       <div>
-        <h2 className="text-2xl font-bold">Welcome, {username}!</h2>
+        <h2 className="text-2xl font-bold">Welcome, {firstName}!</h2>
         <p className="text-gray-500">Track your progress and continue learning.</p>
       </div>
       
