@@ -1,12 +1,15 @@
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider } from "react-hook-form";
-import { Check } from 'lucide-react';
+import { Check, Save, LogOut } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import PageHeader from '@/components/PageHeader';
+import { toast } from '@/components/ui/use-toast';
 
 import { 
   undergraduateFormSchema, 
@@ -40,6 +43,7 @@ const Apply = () => {
   const [step, setStep] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const undergraduateForm = useForm<UndergraduateFormValues>({
@@ -92,6 +96,80 @@ const graduateForm = useForm<GraduateFormValues>({
     ]
   },
 });
+
+  // Function to save application progress
+  const handleSaveProgress = async () => {
+    setIsSaving(true);
+    try {
+      // Get the current user
+      const { data: { session } } = await supabase.auth.getSession();
+      const userId = session?.user?.id;
+      
+      if (!userId) {
+        toast({
+          title: "Not logged in",
+          description: "You need to be logged in to save your progress.",
+          variant: "destructive",
+        });
+        setIsSaving(false);
+        return;
+      }
+
+      // Get the form data based on application type
+      const formData = applicationType === 'undergraduate' 
+        ? undergraduateForm.getValues()
+        : graduateForm.getValues();
+      
+      // Save to the database (in a real app, you would have an applications table)
+      // Since we don't have a real DB table, we'll simulate saving to localStorage
+      localStorage.setItem(`application_${userId}_${applicationType}`, JSON.stringify({
+        type: applicationType,
+        step: step,
+        data: formData,
+        lastSaved: new Date().toISOString()
+      }));
+      
+      toast({
+        title: "Progress Saved",
+        description: "Your application progress has been saved successfully.",
+      });
+    } catch (error) {
+      console.error("Error saving progress:", error);
+      toast({
+        title: "Save Failed",
+        description: "There was an issue saving your progress.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+  
+  // Function to handle logout
+  const handleLogout = async () => {
+    try {
+      // Ask user if they want to save progress before logging out
+      const shouldSave = window.confirm("Would you like to save your progress before logging out?");
+      
+      if (shouldSave) {
+        await handleSaveProgress();
+      }
+      
+      await supabase.auth.signOut();
+      toast({
+        title: "Logged Out",
+        description: "You have been successfully logged out.",
+      });
+      navigate('/login');
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast({
+        title: "Logout Failed",
+        description: "There was an issue logging you out. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const onSubmitUndergraduate = async (data: UndergraduateFormValues) => {
     setIsSubmitting(true);
@@ -163,10 +241,31 @@ const graduateForm = useForm<GraduateFormValues>({
       <section className="py-16">
         <div className="container mx-auto px-4 md:px-8">
           <div className="max-w-4xl mx-auto">
-            <StepIndicator 
-              currentStep={step}
-              applicationType={applicationType} 
-             />
+            <div className="flex justify-between items-center mb-4">
+              <StepIndicator 
+                currentStep={step}
+                applicationType={applicationType} 
+              />
+              <div className="flex space-x-2">
+                <Button 
+                  variant="outline"
+                  onClick={handleSaveProgress}
+                  disabled={isSaving}
+                  className="flex items-center"
+                >
+                  <Save className="h-4 w-4 mr-2" />
+                  {isSaving ? 'Saving...' : 'Save Progress'}
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={handleLogout}
+                  className="text-red-600 hover:bg-red-50 hover:text-red-700 flex items-center"
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Log Out
+                </Button>
+              </div>
+            </div>
             
             <Card>
               <CardHeader>

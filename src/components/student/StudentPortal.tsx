@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -16,7 +17,7 @@ import {
 } from '@/components/ui/sidebar';
 import { 
   BookOpen, Calendar, FileText, LogOut, 
-  User, Settings, Home, Mail, HelpCircle, Menu, X, Save
+  User, Settings, Home, Mail, HelpCircle, Menu, X
 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import CoursesList from '@/components/courses/CoursesList';
@@ -52,7 +53,6 @@ const StudentPortal = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -115,7 +115,6 @@ const StudentPortal = () => {
   
   const handleLogout = async () => {
     try {
-      await saveUserProgress();
       await supabase.auth.signOut();
       toast({
         title: "Logged Out",
@@ -130,43 +129,6 @@ const StudentPortal = () => {
         variant: "destructive",
       });
     }
-  };
-  
-  const saveUserProgress = async () => {
-    if (!user) return;
-    
-    setIsSaving(true);
-    try {
-      // Get the current timestamp
-      const timestamp = new Date().toISOString();
-      
-      // Update the last_accessed field for the user's lesson progress
-      const { error } = await supabase
-        .from('lesson_progress')
-        .update({ last_accessed: timestamp })
-        .eq('user_id', user.id)
-        .is('completed', false);
-      
-      if (error) throw error;
-      
-      toast({
-        title: "Progress Saved",
-        description: "Your progress has been saved successfully.",
-      });
-    } catch (error) {
-      console.error("Error saving progress:", error);
-      toast({
-        title: "Save Failed",
-        description: "There was an issue saving your progress.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSaving(false);
-    }
-  };
-  
-  const handleSaveProgress = async () => {
-    await saveUserProgress();
   };
   
   const getUserDisplayName = () => {
@@ -327,15 +289,6 @@ const StudentPortal = () => {
                     
                     <SidebarFooter className="border-t p-4 space-y-2">
                       <Button 
-                        variant="outline"
-                        onClick={handleSaveProgress}
-                        className="w-full justify-start"
-                        disabled={isSaving}
-                      >
-                        <Save className="h-5 w-5 mr-2" />
-                        {isSaving ? 'Saving...' : 'Save Progress'}
-                      </Button>
-                      <Button 
                         variant="ghost"
                         onClick={handleLogout}
                         className="w-full justify-start text-red-600 hover:bg-red-50 hover:text-red-700"
@@ -474,15 +427,6 @@ const StudentPortal = () => {
                     </SidebarContent>
                     
                     <SidebarFooter className="border-t p-4 space-y-2">
-                      <Button 
-                        variant="outline"
-                        onClick={handleSaveProgress}
-                        className="w-full justify-start"
-                        disabled={isSaving}
-                      >
-                        <Save className="h-5 w-5 mr-2" />
-                        {isSaving ? 'Saving...' : 'Save Progress'}
-                      </Button>
                       <Button 
                         variant="ghost"
                         onClick={() => {
