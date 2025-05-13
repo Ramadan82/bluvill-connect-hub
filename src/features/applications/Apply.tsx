@@ -287,7 +287,9 @@ const Apply = () => {
                 currentStep={step}
                 applicationType={applicationType} 
               />
-              <div className="flex space-x-2">
+              
+              {/* Desktop Action Buttons */}
+              <div className="hidden md:flex space-x-2">
                 <Button 
                   variant="outline"
                   onClick={handleSaveProgress}
@@ -308,7 +310,30 @@ const Apply = () => {
               </div>
             </div>
             
-            <Card>
+            {/* Mobile Action Buttons - Fixed at bottom */}
+            <div className="md:hidden flex justify-between fixed bottom-0 left-0 right-0 bg-white p-3 border-t z-10 shadow-lg">
+              <Button 
+                variant="outline"
+                onClick={handleSaveProgress}
+                disabled={isSaving}
+                className="flex items-center flex-1 mr-2"
+                size="sm"
+              >
+                <Save className="h-4 w-4 mr-2" />
+                {isSaving ? 'Saving...' : 'Save'}
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={handleLogout}
+                className="text-red-600 hover:bg-red-50 hover:text-red-700 flex items-center flex-1"
+                size="sm"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Log Out
+              </Button>
+            </div>
+            
+            <Card className="mb-16 md:mb-0">
               <CardHeader>
                 <CardTitle>
                   {applicationType === 'undergraduate' ? 'Undergraduate' : 'Graduate'} Application

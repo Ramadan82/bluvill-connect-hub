@@ -14,17 +14,18 @@ interface StaffRoutesProps {
   staffType: string;
 }
 
+// Fixed TypeScript error by properly forwarding the staffType prop
 const StaffRoutes: React.FC<StaffRoutesProps> = ({ staffType }) => {
   return (
     <Routes>
       <Route path="/" element={staffType === 'academic' ? <AcademicStaffDashboard /> : <NonAcademicStaffDashboard />} />
       <Route path="/dashboard" element={staffType === 'academic' ? <AcademicStaffDashboard /> : <NonAcademicStaffDashboard />} />
       <Route path="/calendar" element={<AcademicCalendar />} />
-      <Route path="/teaching-resources" element={<TeachingResources />} />
-      <Route path="/research-portal" element={<ResearchPortal />} />
-      <Route path="/faculty-directory" element={<FacultyDirectory />} />
-      <Route path="/forms-policies" element={<FormsPolicies />} />
-      <Route path="/support-services" element={<SupportServices />} />
+      <Route path="/teaching" element={<TeachingResources />} />
+      <Route path="/research" element={<ResearchPortal />} />
+      <Route path="/directory" element={<FacultyDirectory />} />
+      <Route path="/forms" element={<FormsPolicies staffType={staffType} />} />
+      <Route path="/support" element={<SupportServices staffType={staffType} />} />
       <Route path="*" element={<Navigate to="/staff-portal" replace />} />
     </Routes>
   );
