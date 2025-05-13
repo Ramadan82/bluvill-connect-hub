@@ -14,7 +14,6 @@ interface StaffRoutesProps {
   staffType: string;
 }
 
-// Fixed TypeScript error by properly forwarding the staffType prop
 const StaffRoutes: React.FC<StaffRoutesProps> = ({ staffType }) => {
   return (
     <Routes>
