@@ -166,14 +166,14 @@ const StudentPortal = () => {
                 <div className="hidden md:block md:w-64">
                   <Sidebar 
                     side="left" 
-                    className="bg-white shadow-lg h-[calc(100vh-120px)] sticky top-24"
+                    className="bg-white shadow-lg h-[calc(100vh-120px)] sticky top-24 flex flex-col"
                   >
-                    <SidebarHeader className="p-4 flex justify-between items-center">
+                    <SidebarHeader className="p-4 flex justify-between items-center flex-shrink-0">
                       <h3 className="font-semibold text-lg">Student Portal</h3>
                     </SidebarHeader>
                     
-                    <SidebarContent className="p-2">
-                      <SidebarMenu>
+                    <SidebarContent className="p-2 flex-1 overflow-y-auto">
+                      <SidebarMenu className="space-y-1">
                         <SidebarMenuItem>
                           <SidebarMenuButton 
                             asChild
@@ -284,34 +284,34 @@ const StudentPortal = () => {
                             </Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
+                        
+                        {/* Logout button placed directly in the menu */}
+                        <SidebarMenuItem>
+                          <SidebarMenuButton 
+                            onClick={handleLogout}
+                            className="text-red-600 hover:bg-red-50 hover:text-red-700 w-full justify-start"
+                          >
+                            <LogOut className="h-5 w-5 mr-2" />
+                            <span>Log Out</span>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
                       </SidebarMenu>
                     </SidebarContent>
-                    
-                    <SidebarFooter className="border-t p-4 space-y-2">
-                      <Button 
-                        variant="ghost"
-                        onClick={handleLogout}
-                        className="w-full justify-start text-red-600 hover:bg-red-50 hover:text-red-700"
-                      >
-                        <LogOut className="h-5 w-5 mr-2" />
-                        Log Out
-                      </Button>
-                    </SidebarFooter>
                   </Sidebar>
                 </div>
 
                 {/* Mobile Sidebar - Controlled by state */}
                 <div className={`fixed inset-0 z-50 transform transition-transform duration-300 ease-in-out ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-                  <div className="relative h-full w-64 bg-white shadow-lg">
-                    <SidebarHeader className="p-4 flex justify-between items-center">
+                  <div className="relative h-full w-64 bg-white shadow-lg flex flex-col">
+                    <SidebarHeader className="p-4 flex justify-between items-center flex-shrink-0">
                       <h3 className="font-semibold text-lg">Student Portal</h3>
                       <button onClick={closeMobileSidebar} className="p-1 rounded-md hover:bg-gray-100">
                         <X className="h-6 w-6" />
                       </button>
                     </SidebarHeader>
                     
-                    <SidebarContent className="p-2">
-                      <SidebarMenu>
+                    <SidebarContent className="p-2 flex-1 overflow-y-auto">
+                      <SidebarMenu className="space-y-1">
                         <SidebarMenuItem>
                           <SidebarMenuButton 
                             asChild
@@ -423,22 +423,22 @@ const StudentPortal = () => {
                             </Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
+                        
+                        {/* Logout button for mobile */}
+                        <SidebarMenuItem>
+                          <SidebarMenuButton 
+                            onClick={() => {
+                              handleLogout();
+                              closeMobileSidebar();
+                            }}
+                            className="text-red-600 hover:bg-red-50 hover:text-red-700 w-full justify-start"
+                          >
+                            <LogOut className="h-5 w-5 mr-2" />
+                            <span>Log Out</span>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
                       </SidebarMenu>
                     </SidebarContent>
-                    
-                    <SidebarFooter className="border-t p-4 space-y-2">
-                      <Button 
-                        variant="ghost"
-                        onClick={() => {
-                          handleLogout();
-                          closeMobileSidebar();
-                        }}
-                        className="w-full justify-start text-red-600 hover:bg-red-50 hover:text-red-700"
-                      >
-                        <LogOut className="h-5 w-5 mr-2" />
-                        Log Out
-                      </Button>
-                    </SidebarFooter>
                   </div>
                 </div>
 
