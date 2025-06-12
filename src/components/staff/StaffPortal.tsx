@@ -22,7 +22,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/use-toast';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import StaffRoutes from '@/components/staff/StaffRoutes';
-import StaffTypeSelector from '@/components/staff/StaffTypeSelector';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -174,13 +173,8 @@ const StaffPortal = () => {
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
               <h1 className="text-2xl font-bold text-blue-700">
-                {staffType === 'academic' ? 'Academic Staff Portal' : 'Administrative Staff Portal'}
+                Staff Portal
               </h1>
-              <StaffTypeSelector 
-                currentType={staffType}
-                onTypeChange={setStaffType}
-                className="hidden md:flex"
-              />
             </div>
             
             <div className="flex items-center space-x-4">
@@ -270,15 +264,6 @@ const StaffPortal = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-          </div>
-          
-          {/* Mobile staff type selector */}
-          <div className="md:hidden mt-2">
-            <StaffTypeSelector 
-              currentType={staffType}
-              onTypeChange={setStaffType}
-              className="w-full"
-            />
           </div>
         </div>
       </header>
