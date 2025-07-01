@@ -246,7 +246,7 @@ const StaffDashboard = () => {
                     <span className="font-medium">Introduction to Computer Science</span>
                     <span className="text-sm">75%</span>
                   </div>
-                  <Progress value={75} className="h-2" />
+                  <Progress value={75} className="h-2" indicatorClassName="bg-blue-600" />
                 </div>
                 
                 <div>
@@ -254,7 +254,7 @@ const StaffDashboard = () => {
                     <span className="font-medium">Advanced Mathematics</span>
                     <span className="text-sm">60%</span>
                   </div>
-                  <Progress value={60} className="h-2" />
+                  <Progress value={60} className="h-2" indicatorClassName="bg-green-600" />
                 </div>
                 
                 <div>
@@ -262,7 +262,7 @@ const StaffDashboard = () => {
                     <span className="font-medium">Principles of Economics</span>
                     <span className="text-sm">90%</span>
                   </div>
-                  <Progress value={90} className="h-2" />
+                  <Progress value={90} className="h-2" indicatorClassName="bg-amber-600" />
                 </div>
                 
                 <div>
@@ -270,7 +270,7 @@ const StaffDashboard = () => {
                     <span className="font-medium">Introduction to Psychology</span>
                     <span className="text-sm">45%</span>
                   </div>
-                  <Progress value={45} className="h-2" />
+                  <Progress value={45} className="h-2" indicatorClassName="bg-purple-600" />
                 </div>
               </div>
             </CardContent>

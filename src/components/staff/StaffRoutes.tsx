@@ -9,7 +9,6 @@ import FormsPolicies from './FormsPolicies';
 import SupportServices from './SupportServices';
 import AcademicStaffDashboard from './AcademicStaffDashboard';
 import NonAcademicStaffDashboard from './NonAcademicStaffDashboard';
-import StaffDashboard from './StaffDashboard';
 
 interface StaffRoutesProps {
   staffType: string;
@@ -18,8 +17,8 @@ interface StaffRoutesProps {
 const StaffRoutes: React.FC<StaffRoutesProps> = ({ staffType }) => {
   return (
     <Routes>
-      <Route path="/" element={<StaffDashboard />} />
-      <Route path="/dashboard" element={<StaffDashboard />} />
+      <Route path="/" element={staffType === 'academic' ? <AcademicStaffDashboard /> : <NonAcademicStaffDashboard />} />
+      <Route path="/dashboard" element={staffType === 'academic' ? <AcademicStaffDashboard /> : <NonAcademicStaffDashboard />} />
       <Route path="/calendar" element={<AcademicCalendar />} />
       <Route path="/teaching" element={<TeachingResources />} />
       <Route path="/research" element={<ResearchPortal />} />
