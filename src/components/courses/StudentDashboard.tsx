@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { BookOpen, Award, Clock, ChevronRight } from 'lucide-react';
+import { BookOpen, Award, Clock, ChevronRight, Bell, Calendar, AlertCircle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface EnrolledCourse {
@@ -18,8 +18,36 @@ interface EnrolledCourse {
   completed_lessons: number;
 }
 
+interface Announcement {
+  id: string;
+  title: string;
+  content: string;
+  type: string;
+  created_at: string;
+}
+
+interface Event {
+  id: string;
+  title: string;
+  description: string | null;
+  event_date: string;
+  location: string | null;
+  type: string;
+}
+
+interface AcademicDeadline {
+  id: string;
+  title: string;
+  description: string | null;
+  due_date: string;
+  type: string;
+}
+
 const StudentDashboard = () => {
   const [enrolledCourses, setEnrolledCourses] = useState<EnrolledCourse[]>([]);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
+  const [academicDeadlines, setAcademicDeadlines] = useState<AcademicDeadline[]>([]);
   const [loading, setLoading] = useState(true);
   const [firstName, setFirstName] = useState('');
 
@@ -145,6 +173,41 @@ const StudentDashboard = () => {
           );
           
           setEnrolledCourses(coursesWithProgress);
+
+          // Fetch announcements
+          const { data: announcementsData, error: announcementsError } = await supabase
+            .from('announcements')
+            .select('*')
+            .eq('published', true)
+            .order('created_at', { ascending: false })
+            .limit(5);
+
+          if (announcementsError) throw announcementsError;
+          setAnnouncements(announcementsData || []);
+
+          // Fetch upcoming events
+          const { data: eventsData, error: eventsError } = await supabase
+            .from('events')
+            .select('*')
+            .eq('published', true)
+            .gte('event_date', new Date().toISOString())
+            .order('event_date', { ascending: true })
+            .limit(5);
+
+          if (eventsError) throw eventsError;
+          setUpcomingEvents(eventsData || []);
+
+          // Fetch academic deadlines
+          const { data: deadlinesData, error: deadlinesError } = await supabase
+            .from('academic_deadlines')
+            .select('*')
+            .eq('published', true)
+            .gte('due_date', new Date().toISOString())
+            .order('due_date', { ascending: true })
+            .limit(5);
+
+          if (deadlinesError) throw deadlinesError;
+          setAcademicDeadlines(deadlinesData || []);
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -155,6 +218,41 @@ const StudentDashboard = () => {
     
     fetchUserData();
   }, []);
+
+  const getAnnouncementIcon = (type: string) => {
+    switch (type) {
+      case 'urgent':
+        return <AlertCircle className="h-4 w-4 text-red-500" />;
+      case 'academic':
+        return <BookOpen className="h-4 w-4 text-blue-500" />;
+      default:
+        return <Bell className="h-4 w-4 text-gray-500" />;
+    }
+  };
+
+  const getEventTypeColor = (type: string) => {
+    switch (type) {
+      case 'academic':
+        return 'bg-blue-100 text-blue-800';
+      case 'social':
+        return 'bg-green-100 text-green-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getDeadlineTypeColor = (type: string) => {
+    switch (type) {
+      case 'exam':
+        return 'bg-red-100 text-red-800';
+      case 'assignment':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'project':
+        return 'bg-purple-100 text-purple-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -258,6 +356,158 @@ const StudentDashboard = () => {
             </CardContent>
           </Card>
         )}
+      </div>
+
+      {/* Announcements Section */}
+      <div>
+        <h3 className="text-lg font-semibold mb-4">Recent Announcements</h3>
+        {loading ? (
+          <div className="space-y-3">
+            {[1, 2, 3].map(i => (
+              <Card key={i} className="animate-pulse">
+                <CardContent className="p-4">
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2" />
+                  <div className="h-3 bg-gray-200 rounded w-full" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : announcements.length > 0 ? (
+          <div className="space-y-3">
+            {announcements.map(announcement => (
+              <Card key={announcement.id} className="hover:shadow-sm transition-shadow">
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        {getAnnouncementIcon(announcement.type)}
+                        <h4 className="font-medium">{announcement.title}</h4>
+                        <span className={`px-2 py-1 rounded-full text-xs ${
+                          announcement.type === 'urgent' ? 'bg-red-100 text-red-800' :
+                          announcement.type === 'academic' ? 'bg-blue-100 text-blue-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {announcement.type}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 line-clamp-2">{announcement.content}</p>
+                    </div>
+                    <span className="text-xs text-gray-500 ml-4">
+                      {new Date(announcement.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <Card>
+            <CardContent className="p-6 text-center">
+              <Bell className="h-8 w-8 text-gray-300 mx-auto mb-2" />
+              <p className="text-gray-500">No recent announcements</p>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+
+      {/* Quick Links Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Upcoming Events */}
+        <div>
+          <h3 className="text-lg font-semibold mb-4">Upcoming Events</h3>
+          {loading ? (
+            <div className="space-y-3">
+              {[1, 2].map(i => (
+                <Card key={i} className="animate-pulse">
+                  <CardContent className="p-4">
+                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2" />
+                    <div className="h-3 bg-gray-200 rounded w-1/2" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : upcomingEvents.length > 0 ? (
+            <div className="space-y-3">
+              {upcomingEvents.map(event => (
+                <Card key={event.id} className="hover:shadow-sm transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Calendar className="h-4 w-4 text-blue-500" />
+                          <h4 className="font-medium">{event.title}</h4>
+                          <span className={`px-2 py-1 rounded-full text-xs ${getEventTypeColor(event.type)}`}>
+                            {event.type}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600 mb-1">{event.description}</p>
+                        <div className="flex items-center gap-4 text-xs text-gray-500">
+                          <span>{new Date(event.event_date).toLocaleDateString()}</span>
+                          {event.location && <span>{event.location}</span>}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <Card>
+              <CardContent className="p-6 text-center">
+                <Calendar className="h-8 w-8 text-gray-300 mx-auto mb-2" />
+                <p className="text-gray-500">No upcoming events</p>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
+        {/* Academic Deadlines */}
+        <div>
+          <h3 className="text-lg font-semibold mb-4">Academic Deadlines</h3>
+          {loading ? (
+            <div className="space-y-3">
+              {[1, 2].map(i => (
+                <Card key={i} className="animate-pulse">
+                  <CardContent className="p-4">
+                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2" />
+                    <div className="h-3 bg-gray-200 rounded w-1/2" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : academicDeadlines.length > 0 ? (
+            <div className="space-y-3">
+              {academicDeadlines.map(deadline => (
+                <Card key={deadline.id} className="hover:shadow-sm transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <AlertCircle className="h-4 w-4 text-orange-500" />
+                          <h4 className="font-medium">{deadline.title}</h4>
+                          <span className={`px-2 py-1 rounded-full text-xs ${getDeadlineTypeColor(deadline.type)}`}>
+                            {deadline.type}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600 mb-1">{deadline.description}</p>
+                        <span className="text-xs text-gray-500">
+                          Due: {new Date(deadline.due_date).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <Card>
+              <CardContent className="p-6 text-center">
+                <AlertCircle className="h-8 w-8 text-gray-300 mx-auto mb-2" />
+                <p className="text-gray-500">No upcoming deadlines</p>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
     </div>
   );
